@@ -7,14 +7,10 @@ package signupsignin;
 
 import javafx.application.Application;
 import static javafx.application.Application.launch;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import signupsignin.controllers.SignInController;
 
 /**
  *
@@ -24,12 +20,11 @@ public class SignUpSignInClient extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/view/SignIn.fxml"));
-
-        Scene scene = new Scene(root);
-
-        stage.setScene(scene);
-        stage.show();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("view/SignIn.fxml"));
+        Parent root = (Parent) loader.load();
+        SignInController controller = ((SignInController) loader.getController());
+        controller.setStage(stage);
+        controller.initStage(root);
     }
 
     /**
@@ -38,5 +33,4 @@ public class SignUpSignInClient extends Application {
     public static void main(String[] args) {
         launch(args);
     }
-
 }
