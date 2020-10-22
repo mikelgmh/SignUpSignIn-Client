@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXPasswordField?>
+<?import com.jfoenix.controls.JFXSnackbar?>
+<?import com.jfoenix.controls.JFXSpinner?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<VBox prefHeight="509.0" prefWidth="592.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.SignUpController">
+  <children>
+    <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="449.0" prefWidth="687.0" VBox.vgrow="ALWAYS">
+      <children>
+            <JFXTextField labelFloat="true" layoutX="75.0" layoutY="123.0" prefHeight="25.0" prefWidth="198.0" promptText="First Name" />
+            <JFXTextField labelFloat="true" layoutX="316.0" layoutY="123.0" prefHeight="25.0" prefWidth="198.0" promptText="Last Name" />
+            <JFXTextField labelFloat="true" layoutX="75.0" layoutY="178.0" prefHeight="25.0" prefWidth="437.0" promptText="Email" />
+            <JFXTextField fx:id="txtUsername" labelFloat="true" layoutX="75.0" layoutY="249.0" prefHeight="25.0" prefWidth="198.0" promptText="Username" />
+            <JFXPasswordField fx:id="txtPassword" labelFloat="true" layoutX="75.0" layoutY="305.0" prefHeight="25.0" prefWidth="198.0" promptText="Password" />
+            <JFXPasswordField fx:id="txtRepeatPassword" labelFloat="true" layoutX="307.0" layoutY="305.0" prefHeight="25.0" prefWidth="211.0" promptText="Repeat Password" />
+            <JFXButton fx:id="btnSignUp" layoutX="437.0" layoutY="395.0" prefHeight="34.0" prefWidth="81.0" style="-fx-background-color: #607D8B;" text="Sign Up" textFill="WHITE" />
+            <Text layoutX="75.0" layoutY="81.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Register Form">
+               <font>
+                  <Font size="25.0" />
+               </font>
+            </Text>
+            <JFXSnackbar layoutX="272.0" layoutY="441.0" />
+            <JFXSpinner fx:id="spinnerUsername" layoutX="272.0" layoutY="262.0" prefHeight="15.0" prefWidth="26.0" />
+      </children>
+    </AnchorPane>
+  </children>
+</VBox>

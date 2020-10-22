@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-
+import controllers.SignUpController;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
 import javafx.event.ActionEvent;
@@ -24,12 +24,16 @@ public class SignUpSignInClient extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/view/SignIn.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/SignUp.fxml"));
+        Parent root = (Parent) loader.load();
+        
+        SignUpController controller = ((SignUpController) loader.getController());
 
-        Scene scene = new Scene(root);
-
-        stage.setScene(scene);
-        stage.show();
+        controller.setStage(stage);
+        controller.initStage(root);
+//        Scene scene = new Scene(root);
+//        stage.setScene(scene);
+//        stage.show();
     }
 
     /**
