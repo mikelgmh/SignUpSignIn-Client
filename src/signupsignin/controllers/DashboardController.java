@@ -5,10 +5,26 @@
  */
 package signupsignin.controllers;
 
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+
 /**
  *
  * @author Mikel
  */
 public class DashboardController {
-    
+        private Stage stage;
+    void setStage(Stage stage) {
+        this.stage = stage;
+    }
+
+    void initStage(Parent root) {
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.setTitle("Dashboard");
+        stage.setResizable(false);
+        
+        stage.show();
+    }
 }

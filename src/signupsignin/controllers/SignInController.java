@@ -29,12 +29,11 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
-
 /**
  *
  * @author Iker, Aketza
  */
-public class SignInController implements Initializable{
+public class SignInController implements Initializable {
 
     private Stage stage;
 
@@ -58,7 +57,7 @@ public class SignInController implements Initializable{
         stage.setResizable(false);
         stage.setOnShowing(this::handleWindowShowing);
         txtUser.textProperty().addListener(this::textChanged);
-        txtPassword.textProperty().addListener(this::textChanged);     
+        txtPassword.textProperty().addListener(this::textChanged);
         stage.show();
     }
 
@@ -68,7 +67,6 @@ public class SignInController implements Initializable{
         txtPassword.setPromptText("Insert password");
         btnSignIn.setTooltip(new Tooltip("Send identification values"));
         btnSignUp.setTooltip(new Tooltip("Create a new account"));
-
     }
 
     private void textChanged(ObservableValue observable, String oldValue, String newValue) {
@@ -78,22 +76,29 @@ public class SignInController implements Initializable{
             btnSignIn.setDisable(false);
         }
     }
-    @FXML
-    private void handleOnClickRegister(ActionEvent event) throws IOException{
-        FXMLLoader loader1 = new FXMLLoader();
-loader1.setLocation(getClass().getResource("SignUp.fxml"));
-        
-        Parent root = (Parent) loader1.load();
-        
-        SignUpController controller = ((SignUpController) loader1.getController());
 
+    @FXML
+    private void handleOnClickRegister(ActionEvent event) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/signupsignin/view/SignUp.fxml"));
+        Parent root = (Parent) loader.load();
+        SignUpController controller = ((SignUpController) loader.getController());
+        controller.setStage(stage);
+        controller.initStage(root);
+    }
+
+    @FXML
+    private void handleOnClickLogin(ActionEvent event) throws IOException {
+        //TODO: Comprobar los datos de la base de datos.
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/signupsignin/view/Dashboard.fxml"));
+        Parent root = (Parent) loader.load();
+        DashboardController controller = ((DashboardController) loader.getController());
         controller.setStage(stage);
         controller.initStage(root);
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-         //To change body of generated methods, choose Tools | Templates.
+        //To change body of generated methods, choose Tools | Templates.
     }
-   
+
 }
