@@ -5,6 +5,10 @@
  */
 package controllers;
 
+import interfaces.Signable;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import javafx.animation.PauseTransition;
 import javafx.beans.value.ChangeListener;
@@ -12,6 +16,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.scene.input.KeyEvent;
 import javafx.event.EventTarget;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -22,7 +27,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import signable.SignableFactory;
 import sun.security.util.Length;
+import user.User;
 
 /**
  *
@@ -70,15 +77,18 @@ public class SignUpController {
     }
 
     public void initStage(Parent parent) {
+
+        txt_Email.getProperties().put("emailValid", false);
+        txt_Password.getProperties().put("passwordRequirements", false);
+        txt_RepeatPassword.getProperties().put("passwordRequirements", false);
+        txt_RepeatPassword.getProperties().put("passwordsMatch", false);
+
         Scene scene = new Scene(parent);
         addTextLimiter(txt_Firstname, 20, this);
         addTextLimiter(txt_Lastname, 50, this);
         addTextLimiter(txt_Email, 80, this);
         addTextLimiter(txt_Username, 20, this);
-        txt_Email.getProperties().put("emailValid", false);
-        txt_Password.getProperties().put("passwordRequirements", false);
-        txt_RepeatPassword.getProperties().put("passwordRequirements", false);
-        txt_RepeatPassword.getProperties().put("passwordsMatch", false);
+
         addRegexp(txt_Email, emailRegexp, this, "emailValid");
         addRegexp(txt_Password, passRegexp, this, "passwordRequirements");
         addRegexp(txt_RepeatPassword, passRegexp, this, "passwordRequirements");
@@ -117,8 +127,6 @@ public class SignUpController {
 
     private void comparePasswords(final PasswordField pf1, final PasswordField pf2, String property, SignUpController aThis) {
         if (pf1.getText().equals(pf2.getText()) && pf1.getText().trim().isEmpty() == false) {
-            System.out.println("Pass 1 value: " + pf1.getText());
-            System.out.println("Pass 2 value: " + pf2.getText());
             pf2.getProperties().put(property, true);
         } else {
             pf2.getProperties().put(property, false);
@@ -151,5 +159,33 @@ public class SignUpController {
         } else {
             this.btn_SignUp.setDisable(true);
         }
+    }
+
+    public void SignUpButtonClickHandler() {
+        User user = new User();
+        user.setEmail(this.txt_Email.getText());
+        user.setFullName(this.txt_Firstname.getText() + this.txt_Lastname.getText());
+        user.setPassword(this.txt_RepeatPassword.getText());
+        user.setLogin(this.txt_Username.getText());
+
+        SignableFactory signableFactory = new SignableFactory();
+        Signable signableImplementarion = signableFactory.getSignableImplementation("CLIENT_SIGNABLE");
+        signableImplementarion.signUp(user);
+
+    }
+
+    public void changeStageToLogin() {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/SignIn.fxml"));
+        Parent root = null;
+        try {
+            root = (Parent) loader.load();
+        } catch (IOException ex) {
+            Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        SignUpController controller = ((SignUpController) loader.getController());
+
+        controller.setStage(this.stage);
+        controller.initStage(root);
     }
 }
