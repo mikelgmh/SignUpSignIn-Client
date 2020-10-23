@@ -32,9 +32,9 @@ public class SignUpController {
 
     private final Pattern emailRegexp = Pattern.compile("(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])");
     private final Pattern passRegexp = Pattern.compile("^(?=.*[0-9])"
-                       + "(?=.*[a-z])(?=.*[A-Z])"
-                       + "(?=.*[@#$%^&+=])"
-                       + "(?=\\S+$).{8,20}$");
+            + "(?=.*[a-z])(?=.*[A-Z])"
+            + "(?=.*[@#$%^&+=])"
+            + "(?=\\S+$).{8,20}$");
     private Stage stage;
 
     @FXML
@@ -59,7 +59,7 @@ public class SignUpController {
     private PasswordField txt_RepeatPassword;
 
     @FXML
-    private Button passwordsMatch;
+    private Button btn_SignUp;
 
     public Stage getStage() {
         return this.stage;
@@ -113,7 +113,6 @@ public class SignUpController {
             aThis.comparePasswords(pf1, pf2, property, aThis);
 
         });
-
     }
 
     private void comparePasswords(final PasswordField pf1, final PasswordField pf2, String property, SignUpController aThis) {
@@ -140,24 +139,17 @@ public class SignUpController {
                 }
                 aThis.validate();
             }
-
         });
     }
 
     public void validate() {
-//        if ((Boolean) this.txt_Email.getProperties().get("emailValid")  
-//                && (Boolean) this.txt_Password.getProperties().get("passwordRequirements")
-//                && (Boolean) this.txt_RepeatPassword.getProperties().get("passwordRequirements")
-//                && (Boolean) this.txt_RepeatPassword.getProperties().get("passwordsMatch")) {
-//                this.passwordsMatch.setDisable(false);
-//        } else {
-//            System.out.println("EE");
-//            this.passwordsMatch.setDisable(true);
-//        }
-
-        System.out.println("Email Valid: " + (Boolean) this.txt_Email.getProperties().get("emailValid"));
-         System.out.println("Password 1 requirements: "+(Boolean) this.txt_Password.getProperties().get("passwordRequirements"));
-          System.out.println("Password 2 requirements: "+(Boolean) this.txt_RepeatPassword.getProperties().get("passwordRequirements"));
-        System.out.println("Passwords Match: " + (Boolean) this.txt_RepeatPassword.getProperties().get("passwordsMatch"));
+        if (Boolean.parseBoolean(this.txt_Email.getProperties().get("emailValid").toString())
+                && Boolean.parseBoolean(this.txt_Password.getProperties().get("passwordRequirements").toString())
+                && Boolean.parseBoolean(this.txt_RepeatPassword.getProperties().get("passwordRequirements").toString())
+                && Boolean.parseBoolean(this.txt_RepeatPassword.getProperties().get("passwordsMatch").toString())) {
+            this.btn_SignUp.setDisable(false);
+        } else {
+            this.btn_SignUp.setDisable(true);
+        }
     }
 }

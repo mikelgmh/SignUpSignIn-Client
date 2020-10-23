@@ -31,5 +31,10 @@
          </font>
       </Text>
       <ProgressIndicator fx:id="progress_username" layoutX="299.0" layoutY="292.0" prefHeight="25.0" prefWidth="28.0" visible="false" />
+      <Text fill="#686464" layoutX="108.0" layoutY="169.0" strokeType="OUTSIDE" strokeWidth="0.0" text="8 characters at least">
+         <font>
+            <Font size="8.0" />
+         </font>
+      </Text>
    </children>
 </Pane>
