@@ -7,6 +7,8 @@ package signupsignin.controllers;
 
 import javafx.event.ActionEvent;
 import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
 import javafx.beans.value.ObservableValue;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -26,11 +28,12 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
+
 /**
  *
  * @author Iker, Aketza
  */
-public class SignInController {
+public class SignInController  {
 
     private Stage stage;
 
@@ -54,7 +57,7 @@ public class SignInController {
         stage.setResizable(false);
         stage.setOnShowing(this::handleWindowShowing);
         txtUser.textProperty().addListener(this::textChanged);
-        txtPassword.textProperty().addListener(this::textChanged);
+        txtPassword.textProperty().addListener(this::textChanged);     
         stage.show();
     }
 
@@ -76,7 +79,27 @@ public class SignInController {
     }
 
     @FXML
-    private void handleOnClickRegister() throws Exception {
-        
+    private void handleOnClickRegister(ActionEvent event) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/signupsignin/view/SignUp.fxml"));
+        Parent root = (Parent) loader.load();
+        SignUpController controller = ((SignUpController) loader.getController());
+        controller.setStage(stage);
+        controller.initStage(root);
     }
+
+    @FXML
+    private void handleOnClickLogin(ActionEvent event) throws IOException {
+        //TODO: Comprobar los datos de la base de datos.
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/signupsignin/view/Dashboard.fxml"));
+        Parent root = (Parent) loader.load();
+        DashboardController controller = ((DashboardController) loader.getController());
+        controller.setStage(stage);
+        controller.initStage(root);
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

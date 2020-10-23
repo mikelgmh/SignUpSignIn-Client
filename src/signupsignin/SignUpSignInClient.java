@@ -11,6 +11,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.stage.Stage;
 import signupsignin.controllers.SignInController;
+import signupsignin.controllers.SignUpController;
 
 /**
  *
@@ -20,7 +21,7 @@ public class SignUpSignInClient extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("view/SignIn.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/signupsignin/view/SignIn.fxml"));
         Parent root = (Parent) loader.load();
         SignInController controller = ((SignInController) loader.getController());
         controller.setStage(stage);
