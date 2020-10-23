@@ -1,34 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.JFXButton?>
-<?import com.jfoenix.controls.JFXPasswordField?>
-<?import com.jfoenix.controls.JFXSnackbar?>
-<?import com.jfoenix.controls.JFXSpinner?>
-<?import com.jfoenix.controls.JFXTextField?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<VBox prefHeight="509.0" prefWidth="592.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.SignUpController">
-  <children>
-    <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="449.0" prefWidth="687.0" VBox.vgrow="ALWAYS">
-      <children>
-            <JFXTextField labelFloat="true" layoutX="75.0" layoutY="123.0" prefHeight="25.0" prefWidth="198.0" promptText="First Name" />
-            <JFXTextField labelFloat="true" layoutX="316.0" layoutY="123.0" prefHeight="25.0" prefWidth="198.0" promptText="Last Name" />
-            <JFXTextField labelFloat="true" layoutX="75.0" layoutY="178.0" prefHeight="25.0" prefWidth="437.0" promptText="Email" />
-            <JFXTextField fx:id="txtUsername" labelFloat="true" layoutX="75.0" layoutY="249.0" prefHeight="25.0" prefWidth="198.0" promptText="Username" />
-            <JFXPasswordField fx:id="txtPassword" labelFloat="true" layoutX="75.0" layoutY="305.0" prefHeight="25.0" prefWidth="198.0" promptText="Password" />
-            <JFXPasswordField fx:id="txtRepeatPassword" labelFloat="true" layoutX="307.0" layoutY="305.0" prefHeight="25.0" prefWidth="211.0" promptText="Repeat Password" />
-            <JFXButton fx:id="btnSignUp" layoutX="437.0" layoutY="395.0" prefHeight="34.0" prefWidth="81.0" style="-fx-background-color: #607D8B;" text="Sign Up" textFill="WHITE" />
-            <Text layoutX="75.0" layoutY="81.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Register Form">
-               <font>
-                  <Font size="25.0" />
-               </font>
-            </Text>
-            <JFXSnackbar layoutX="272.0" layoutY="441.0" />
-            <JFXSpinner fx:id="spinnerUsername" layoutX="272.0" layoutY="262.0" prefHeight="15.0" prefWidth="26.0" />
-      </children>
-    </AnchorPane>
-  </children>
-</VBox>
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="506.0" prefWidth="681.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.SignUpController">
+   <children>
+      <Label fx:id="lbl_Firstname" layoutX="105.0" layoutY="105.0" text="Firstname" />
+      <Label fx:id="lbl_Lastname" layoutX="390.0" layoutY="105.0" text="Lastname" />
+      <Label fx:id="lbl_Email" layoutX="105.0" layoutY="181.0" text="Email" />
+      <Label fx:id="lbl_Username" layoutX="107.0" layoutY="259.0" text="Username" />
+      <Label fx:id="lbl_Password" layoutX="105.0" layoutY="340.0" text="Password" />
+      <Label fx:id="lbl_RepeatPassword" layoutX="390.0" layoutY="340.0" text="Repeat Password" />
+      <TextField fx:id="txt_Firstname" layoutX="106.0" layoutY="135.0" />
+      <TextField fx:id="txt_Lastname" layoutX="390.0" layoutY="135.0" />
+      <TextField fx:id="txt_Email" layoutX="107.0" layoutY="212.0" prefHeight="31.0" prefWidth="468.0" />
+      <TextField fx:id="txt_Username" layoutX="106.0" layoutY="289.0" prefHeight="31.0" prefWidth="186.0" />
+      <PasswordField fx:id="txt_Password" layoutX="106.0" layoutY="371.0" prefHeight="31.0" prefWidth="186.0" />
+      <PasswordField fx:id="txt_RepeatPassword" layoutX="390.0" layoutY="371.0" prefHeight="31.0" prefWidth="186.0" />
+      <Button fx:id="btn_SignUp" disable="true" layoutX="503.0" layoutY="447.0" mnemonicParsing="false" text="Sign Up" />
+      <Button fx:id="btn_Cancel" layoutX="421.0" layoutY="447.0" mnemonicParsing="false" text="Cancel" />
+      <Text layoutX="101.0" layoutY="69.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Sign Up">
+         <font>
+            <Font size="32.0" />
+         </font>
+      </Text>
+      <ProgressIndicator fx:id="progress_username" layoutX="299.0" layoutY="292.0" prefHeight="25.0" prefWidth="28.0" visible="false" />
+   </children>
+</Pane>
