@@ -7,10 +7,13 @@ package signupsignin.controllers;
 
 import javafx.event.ActionEvent;
 import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
 import javafx.beans.value.ObservableValue;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -31,7 +34,7 @@ import javafx.stage.WindowEvent;
  *
  * @author Iker, Aketza
  */
-public class SignInController  {
+public class SignInController implements Initializable{
 
     private Stage stage;
 
@@ -75,6 +78,22 @@ public class SignInController  {
             btnSignIn.setDisable(false);
         }
     }
-   
+    @FXML
+    private void handleOnClickRegister(ActionEvent event) throws IOException{
+        FXMLLoader loader1 = new FXMLLoader();
+loader1.setLocation(getClass().getResource("SignUp.fxml"));
+        
+        Parent root = (Parent) loader1.load();
+        
+        SignUpController controller = ((SignUpController) loader1.getController());
+
+        controller.setStage(stage);
+        controller.initStage(root);
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+         //To change body of generated methods, choose Tools | Templates.
+    }
    
 }
