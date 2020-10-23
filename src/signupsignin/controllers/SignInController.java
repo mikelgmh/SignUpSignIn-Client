@@ -28,12 +28,11 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
-
 /**
  *
  * @author Iker, Aketza
  */
-public class SignInController  {
+public class SignInController {
 
     private Stage stage;
 
@@ -57,7 +56,7 @@ public class SignInController  {
         stage.setResizable(false);
         stage.setOnShowing(this::handleWindowShowing);
         txtUser.textProperty().addListener(this::textChanged);
-        txtPassword.textProperty().addListener(this::textChanged);     
+        txtPassword.textProperty().addListener(this::textChanged);
         stage.show();
     }
 
@@ -96,10 +95,4 @@ public class SignInController  {
         controller.setStage(stage);
         controller.initStage(root);
     }
-
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        //To change body of generated methods, choose Tools | Templates.
-    }
-
 }

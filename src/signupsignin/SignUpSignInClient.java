@@ -11,7 +11,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.stage.Stage;
 import signupsignin.controllers.SignInController;
-import signupsignin.controllers.SignUpController;
 
 /**
  *
@@ -27,7 +26,7 @@ public class SignUpSignInClient extends Application {
         controller.setStage(stage);
         controller.initStage(root);
     }
-    
+
     /**
      * @param args the command line arguments
      */
