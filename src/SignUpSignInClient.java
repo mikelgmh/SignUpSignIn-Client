@@ -5,6 +5,7 @@
  */
 
 import controllers.SignUpController;
+import interfaces.Signable;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
 import javafx.event.ActionEvent;
@@ -15,6 +16,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import signable.SignableFactory;
 
 /**
  *
@@ -26,14 +28,16 @@ public class SignUpSignInClient extends Application {
     public void start(Stage stage) throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/SignUp.fxml"));
         Parent root = (Parent) loader.load();
-        
-        SignUpController controller = ((SignUpController) loader.getController());
 
+        SignUpController controller = ((SignUpController) loader.getController());
+        
+        SignableFactory signableFactory = new SignableFactory();
+        Signable signableImplementarion = signableFactory.getSignableImplementation("CLIENT_SIGNABLE");
+        
+        controller.setSignable(signableImplementarion);
         controller.setStage(stage);
         controller.initStage(root);
-//        Scene scene = new Scene(root);
-//        stage.setScene(scene);
-//        stage.show();
+
     }
 
     /**

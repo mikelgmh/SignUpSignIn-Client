@@ -44,6 +44,8 @@ public class SignUpController {
             + "(?=\\S+$).{8,20}$");
     private Stage stage;
 
+    private Signable signableImplementation;
+
     @FXML
     private TextField txt_Firstname;
 
@@ -74,6 +76,10 @@ public class SignUpController {
 
     public void setStage(Stage stage) {
         this.stage = stage;
+    }
+
+    public void setSignable(Signable signable) {
+        this.signableImplementation = signable;
     }
 
     public void initStage(Parent parent) {
@@ -168,9 +174,8 @@ public class SignUpController {
         user.setPassword(this.txt_RepeatPassword.getText());
         user.setLogin(this.txt_Username.getText());
 
-        SignableFactory signableFactory = new SignableFactory();
-        Signable signableImplementarion = signableFactory.getSignableImplementation("CLIENT_SIGNABLE");
-        signableImplementarion.signUp(user);
+        
+        this.signableImplementation.signUp(user);
 
     }
 
