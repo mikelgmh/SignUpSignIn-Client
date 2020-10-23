@@ -14,7 +14,9 @@ import javafx.stage.Stage;
  * @author Mikel
  */
 public class SignUpController {
+
     private Stage stage;
+
     void setStage(Stage stage) {
         this.stage = stage;
     }
@@ -24,8 +26,7 @@ public class SignUpController {
         stage.setScene(scene);
         stage.setTitle("Sign Up");
         stage.setResizable(false);
-        
         stage.show();
     }
-    
+
 }
