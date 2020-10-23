@@ -26,7 +26,7 @@ public class SignUpSignInClient extends Application {
         controller.setStage(stage);
         controller.initStage(root);
     }
-
+    
     /**
      * @param args the command line arguments
      */
