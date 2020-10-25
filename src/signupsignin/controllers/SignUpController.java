@@ -14,18 +14,19 @@ import javafx.stage.Stage;
  * @author Mikel
  */
 public class SignUpController {
+
     private Stage stage;
+
     public void setStage(Stage stage) {
         this.stage = stage;
     }
 
-   public void initStage(Parent root) {
+    public void initStage(Parent root) {
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.setTitle("Sign Up");
         stage.setResizable(false);
-        
         stage.show();
     }
-    
+
 }

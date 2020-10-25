@@ -27,6 +27,8 @@ import javafx.scene.input.InputMethodEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import signupsignin.signable.SignableImplementation;
+import user.User;
 
 /**
  *
@@ -88,7 +90,17 @@ public class SignInController {
 
     @FXML
     private void handleOnClickLogin(ActionEvent event) throws IOException {
-        //TODO: Comprobar los datos de la base de datos.
+        //TODO: Comprobar los datos en la base de datos.
+        //Guardamos la información de user y password dentro de la clase User
+        User user = new User();
+        user.setLogin(this.txtUser.getText());
+        user.setPassword(this.txtPassword.getText());
+
+        //Enviamos los datos al SignableImplementation para hacer la comprobación con la BD.
+        SignableImplementation signableImplementation = new SignableImplementation();
+        user = signableImplementation.signIn(user);
+
+        //TODO: Una vez los datos sean correctos, pasar a la ventana de Dashboard con los datos del User.
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/signupsignin/view/Dashboard.fxml"));
         Parent root = (Parent) loader.load();
         DashboardController controller = ((DashboardController) loader.getController());
