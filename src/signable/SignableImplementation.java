@@ -44,7 +44,7 @@ public class SignableImplementation implements Signable {
         this.startConnection("localhost", 3333);
         this.sendMessage(message);
         this.stopConnection();
-        return null;
+        return user;
 
     }
 
