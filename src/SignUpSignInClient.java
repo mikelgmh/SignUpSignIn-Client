@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-import signupsignin.controllers.SignUpController;
+import signupsignin.controllers.SignInController;
 import interfaces.Signable;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
@@ -24,7 +24,7 @@ public class SignUpSignInClient extends Application {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/signupsignin/view/SignIn.fxml"));
         Parent root = (Parent) loader.load();
 
-        SignUpController controller = ((SignUpController) loader.getController());
+        SignInController controller = ((SignInController) loader.getController());
         
         SignableFactory signableFactory = new SignableFactory();
         Signable signableImplementarion = signableFactory.getSignableImplementation("CLIENT_SIGNABLE");

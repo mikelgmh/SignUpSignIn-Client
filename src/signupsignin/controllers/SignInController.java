@@ -5,6 +5,7 @@
  */
 package signupsignin.controllers;
 
+import interfaces.Signable;
 import javafx.event.ActionEvent;
 import java.io.IOException;
 import java.net.URL;
@@ -37,6 +38,7 @@ import user.User;
 public class SignInController {
 
     private Stage stage;
+    private Signable signableImplementation;
 
     @FXML
     private Button btnSignIn;
@@ -49,6 +51,13 @@ public class SignInController {
 
     public void setStage(Stage stage) {
         this.stage = stage;
+    }
+
+    public SignInController() {
+    }
+
+    public void setSignable(Signable signable) {
+        this.signableImplementation = signable;
     }
 
     public void initStage(Parent root) {
@@ -97,8 +106,7 @@ public class SignInController {
         user.setPassword(this.txtPassword.getText());
 
         //Enviamos los datos al SignableImplementation para hacer la comprobación con la BD.
-        SignableImplementation signableImplementation = new SignableImplementation();
-        user = signableImplementation.signIn(user);
+        this.signableImplementation.signIn(user);
 
         //TODO: Una vez los datos sean correctos, pasar a la ventana de Dashboard con los datos del User.
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/signupsignin/view/Dashboard.fxml"));
