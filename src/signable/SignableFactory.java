@@ -12,10 +12,7 @@ import interfaces.Signable;
  * @author Mikel
  */
 public class SignableFactory {
-public enum SignableType {
-  CLIENT_SIGNABLE,
 
-}
     public Signable getSignableImplementation(String implementation) {
         Signable signable = null;
         switch (implementation) {
