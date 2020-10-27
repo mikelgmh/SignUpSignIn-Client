@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package signupsignin;
 
+import controllers.SignUpController;
+import interfaces.Signable;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
 import javafx.fxml.FXMLLoader;
@@ -22,9 +23,16 @@ public class SignUpSignInClient extends Application {
     public void start(Stage stage) throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/signupsignin/view/SignIn.fxml"));
         Parent root = (Parent) loader.load();
-        SignInController controller = ((SignInController) loader.getController());
+
+        SignUpController controller = ((SignUpController) loader.getController());
+        
+        SignableFactory signableFactory = new SignableFactory();
+        Signable signableImplementarion = signableFactory.getSignableImplementation("CLIENT_SIGNABLE");
+        
+        controller.setSignable(signableImplementarion);
         controller.setStage(stage);
         controller.initStage(root);
+
     }
 
     /**
