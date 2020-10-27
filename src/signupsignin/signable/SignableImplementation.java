@@ -3,12 +3,45 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package signable;
+package signupsignin.signable;
+
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
+
+import interfaces.Signable;
+import user.User;
+import message.Message;
+import message.TypeMessage;
 
 /**
  *
  * @author Mikel
  */
-public class SignableImplementation {
-    
+public class SignableImplementation implements Signable {
+
+    @Override
+    public User signIn(User user) {
+        // Creamos el mensaje con los parametros
+        Message message = new Message(user, TypeMessage.SIGN_IN);
+        try {
+            Socket s = new Socket("localhost", 6666);
+            ObjectOutputStream os = new ObjectOutputStream(s.getOutputStream());
+            os.writeObject(message);
+            os.close();
+            s.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        // Al final del todo le devolvemos los datos del User al usuario.
+        return user;
+    }
+
+    @Override
+    public User signUp(User user) {
+        // Creamos el mensaje con los parametros
+        Message message = new Message(user, TypeMessage.SIGN_UP);
+        // Al final del todo le devolvemos los datos del User al usuario.
+        return user;
+    }
 }
