@@ -4,14 +4,14 @@
  * and open the template in the editor.
  */
 
-import controllers.SignUpController;
+import signupsignin.controllers.SignUpController;
 import interfaces.Signable;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.stage.Stage;
-import signupsignin.controllers.SignInController;
+import signupsignin.signable.SignableFactory;
 
 /**
  *

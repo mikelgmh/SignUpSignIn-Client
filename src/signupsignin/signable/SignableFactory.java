@@ -5,10 +5,22 @@
  */
 package signupsignin.signable;
 
+import signupsignin.signable.SignableImplementation;
+import interfaces.Signable;
+
 /**
  *
  * @author Mikel
  */
 public class SignableFactory {
-    
+
+    public Signable getSignableImplementation(String implementation) {
+        Signable signable = null;
+        switch (implementation) {
+            case "CLIENT_SIGNABLE":
+                signable = new SignableImplementation();
+                break;
+        }
+        return signable;
+    }
 }

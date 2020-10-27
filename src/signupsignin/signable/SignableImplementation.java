@@ -1,18 +1,22 @@
+package signupsignin.signable;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package signupsignin.signable;
-
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
-
 import interfaces.Signable;
-import user.User;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
+import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import message.Message;
 import message.TypeMessage;
+import user.User;
 
 /**
  *
@@ -20,28 +24,61 @@ import message.TypeMessage;
  */
 public class SignableImplementation implements Signable {
 
+    private Socket clientSocket;
+    private PrintWriter out;
+    private BufferedReader in;
+    private ObjectOutputStream oos;
+
+    public SignableImplementation() {
+
+    }
+
     @Override
     public User signIn(User user) {
-        // Creamos el mensaje con los parametros
-        Message message = new Message(user, TypeMessage.SIGN_IN);
-        try {
-            Socket s = new Socket("localhost", 6666);
-            ObjectOutputStream os = new ObjectOutputStream(s.getOutputStream());
-            os.writeObject(message);
-            os.close();
-            s.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        // Al final del todo le devolvemos los datos del User al usuario.
-        return user;
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public User signUp(User user) {
-        // Creamos el mensaje con los parametros
         Message message = new Message(user, TypeMessage.SIGN_UP);
-        // Al final del todo le devolvemos los datos del User al usuario.
+        this.startConnection("localhost", 3333);
+        this.sendMessage(message);
+        this.stopConnection();
         return user;
+
+    }
+
+    public String sendMessage(Message msg) {
+        String resp = "";
+        try {
+            //out.println(msg);
+            oos.writeObject(msg);
+            resp = in.readLine();
+            return resp;
+        } catch (IOException ex) {
+            Logger.getLogger(SignableImplementation.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return resp;
+    }
+
+    public void startConnection(String ip, int port) {
+        try {
+            clientSocket = new Socket(ip, port);
+            //out = new PrintWriter(clientSocket.getOutputStream(), true);
+            oos = new ObjectOutputStream(clientSocket.getOutputStream());
+            in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+        } catch (IOException ex) {
+            Logger.getLogger(SignableImplementation.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void stopConnection() {
+        try {
+            in.close();
+            out.close();
+            clientSocket.close();
+        } catch (IOException ex) {
+            Logger.getLogger(SignableImplementation.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }
