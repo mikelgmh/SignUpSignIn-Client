@@ -83,20 +83,47 @@ public class SignUpController {
 
         Scene scene = new Scene(parent);
 
+        this.setListeners();
         stage.setScene(scene);
         stage.setTitle("Register");
         stage.setResizable(false);
         stage.show();
     }
 
-    public static void firstNameListener(final int maxLength, SignUpController aThis) {
-        aThis.txt_Firstname.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                aThis.minLength(aThis.txt_Firstname, 3, newValue, "minLengthValidator");
-                aThis.textLimiter(aThis.txt_Firstname, 20, newValue);
-            }
+    public void setListeners() {
+        this.txt_Firstname.textProperty().addListener((obs, oldText, newText) -> {
+            minLength(this.txt_Firstname, 3, newText, "minLengthValidator");
+            textLimiter(this.txt_Firstname, 20, newText);
+            this.validate();
         });
+
+        this.txt_Lastname.textProperty().addListener((obs, oldText, newText) -> {
+            minLength(this.txt_Lastname, 3, newText, "minLengthValidator");
+            textLimiter(this.txt_Lastname, 20, newText);
+            this.validate();
+        });
+
+        this.txt_Email.textProperty().addListener((obs, oldText, newText) -> {
+            minLength(this.txt_Email, 3, newText, "minLengthValidator");
+            regexValidator(this.emailRegexp, this.txt_Email, "emailValidator");
+            this.validate();
+        });
+        this.txt_Username.textProperty().addListener((obs, oldText, newText) -> {
+            minLength(this.txt_Username, 3, newText, "minLengthValidator");
+            textLimiter(this.txt_Username, 20, newText);
+            this.validate();
+        });
+        this.txt_Password.textProperty().addListener((obs, oldText, newText) -> {
+            comparePasswords(this.txt_Password, this.txt_RepeatPassword, "passwordsMatch");
+            regexValidator(this.passRegexp, this.txt_Password, "passwordRequirements");
+            this.validate();
+        });
+        this.txt_RepeatPassword.textProperty().addListener((obs, oldText, newText) -> {
+            comparePasswords(this.txt_Password, this.txt_RepeatPassword, "passwordsMatch");
+            regexValidator(this.passRegexp, this.txt_RepeatPassword, "passwordRequirements");
+            this.validate();
+        });
+
     }
 
     public void regexValidator(Pattern regexp, TextField tf, String property) {
@@ -122,53 +149,14 @@ public class SignUpController {
         }
     }
 
-//    public static void addTextLimiter(final TextField tf, final int maxLength, SignUpController aThis) {
-//        tf.textProperty().addListener(new ChangeListener<String>() {
-//            @Override
-//            public void changed(final ObservableValue<? extends String> ov, final String oldValue, final String newValue) {
-//                if (tf.getText().length() > maxLength) {
-//                    String s = tf.getText().substring(0, maxLength);
-//                    tf.setText(s);
-//                }
-//                aThis.validate();
-//            }
-//        });
-//    }
-
-//    public static void checkIfPasswordsMatch(final PasswordField pf1, final PasswordField pf2, String property, SignUpController aThis) {
-//        pf1.textProperty().addListener((obs, oldText, newText) -> {
-//            aThis.comparePasswords(pf1, pf2, property, aThis);
-//
-//        });
-//        pf2.textProperty().addListener((obs, oldText, newText) -> {
-//            aThis.comparePasswords(pf1, pf2, property, aThis);
-//
-//        });
-//    }
-
-    public void comparePasswords(final PasswordField pf1, final PasswordField pf2, String property, SignUpController aThis) {
+    public void comparePasswords(final PasswordField pf1, final PasswordField pf2, String property) {
         if (pf1.getText().equals(pf2.getText()) && pf1.getText().trim().isEmpty() == false) {
             pf2.getProperties().put(property, true);
         } else {
             pf2.getProperties().put(property, false);
         }
-        aThis.validate();
+        this.validate();
     }
-
-//    public static void addRegexp(final TextField tf, final Pattern regexp, SignUpController aThis, String property) {
-//        tf.textProperty().addListener(new ChangeListener<String>() {
-//            @Override
-//            public void changed(final ObservableValue<? extends String> ov, final String oldValue, final String newValue) {
-//                if (regexp.matcher(tf.getText()).matches()) {
-//                    tf.getProperties().put(property, true);
-//                } else {
-//                    // todo: add error message/markup
-//                    tf.getProperties().put(property, false);
-//                }
-//                aThis.validate();
-//            }
-//        });
-//    }
 
     public void validate() {
         if (Boolean.parseBoolean(this.txt_Email.getProperties().get("emailValidator").toString())
@@ -187,7 +175,7 @@ public class SignUpController {
         user.setFullName(this.txt_Firstname.getText() + this.txt_Lastname.getText());
         user.setPassword(this.txt_RepeatPassword.getText());
         user.setLogin(this.txt_Username.getText());
-        this.signableImplementation.signUp(user);
+        //this.signableImplementation.signUp(user);
     }
 
     public void changeStageToLogin() {
