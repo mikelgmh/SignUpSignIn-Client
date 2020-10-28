@@ -25,8 +25,6 @@ import user.User;
 public class SignableImplementation implements Signable {
 
     private Socket clientSocket;
-    private PrintWriter out;
-    private BufferedReader in;
     private ObjectOutputStream oos;
 
     public SignableImplementation() {
@@ -35,7 +33,11 @@ public class SignableImplementation implements Signable {
 
     @Override
     public User signIn(User user) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Message message = new Message(user, TypeMessage.SIGN_IN);
+        startConnection("localhost", 3333);
+        sendMessage(message);
+        stopConnection();
+        return user;
     }
 
     @Override
@@ -53,7 +55,7 @@ public class SignableImplementation implements Signable {
         try {
             //out.println(msg);
             oos.writeObject(msg);
-            resp = in.readLine();
+           // resp = in.readLine();
             return resp;
         } catch (IOException ex) {
             Logger.getLogger(SignableImplementation.class.getName()).log(Level.SEVERE, null, ex);
@@ -66,7 +68,7 @@ public class SignableImplementation implements Signable {
             clientSocket = new Socket(ip, port);
             //out = new PrintWriter(clientSocket.getOutputStream(), true);
             oos = new ObjectOutputStream(clientSocket.getOutputStream());
-            in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+           // in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
         } catch (IOException ex) {
             Logger.getLogger(SignableImplementation.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -74,8 +76,8 @@ public class SignableImplementation implements Signable {
 
     public void stopConnection() {
         try {
-            in.close();
-            out.close();
+           // in.close();
+           // out.close();
             clientSocket.close();
         } catch (IOException ex) {
             Logger.getLogger(SignableImplementation.class.getName()).log(Level.SEVERE, null, ex);

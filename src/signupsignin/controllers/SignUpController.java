@@ -191,7 +191,7 @@ public class SignUpController {
     }
 
     public void changeStageToLogin() {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/SignIn.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/signupsignin/view/SignIn.fxml"));
         Parent root = null;
         try {
             root = (Parent) loader.load();

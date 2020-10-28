@@ -15,7 +15,7 @@ import signupsignin.signable.SignableFactory;
 
 /**
  *
- * @author Mikel
+ * @author 
  */
 public class SignUpSignInClient extends Application {
 
@@ -23,13 +23,9 @@ public class SignUpSignInClient extends Application {
     public void start(Stage stage) throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/signupsignin/view/SignIn.fxml"));
         Parent root = (Parent) loader.load();
-
         SignInController controller = ((SignInController) loader.getController());
-        
         SignableFactory signableFactory = new SignableFactory();
-        Signable signableImplementarion = signableFactory.getSignableImplementation("CLIENT_SIGNABLE");
-        
-        controller.setSignable(signableImplementarion);
+
         controller.setStage(stage);
         controller.initStage(root);
 
