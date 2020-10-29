@@ -187,7 +187,7 @@ public class SignUpController {
         user.setFullName(this.txt_Firstname.getText() + this.txt_Lastname.getText());
         user.setPassword(this.txt_RepeatPassword.getText());
         user.setLogin(this.txt_Username.getText());
-        this.signableImplementation.signUp(user);
+        //this.signableImplementation.signUp(user);
     }
 
     public void changeStageToLogin() {
