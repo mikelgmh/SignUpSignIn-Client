@@ -55,13 +55,11 @@ public class SignableImplementation implements Signable {
         try {
             // out.println(msg);
             oos.writeObject(msg);
-            resp = (String) ois.readObject();
+            //resp = (String) ois.readObject();
             System.out.println("RESPUESTA::::: ");
             System.out.println(resp);
             return resp;
         } catch (IOException ex) {
-            Logger.getLogger(SignableImplementation.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ClassNotFoundException ex) {
             Logger.getLogger(SignableImplementation.class.getName()).log(Level.SEVERE, null, ex);
         }
         return resp;
@@ -72,7 +70,7 @@ public class SignableImplementation implements Signable {
             clientSocket = new Socket(ip, port);
             //out = new PrintWriter(clientSocket.getOutputStream(), true);
             oos = new ObjectOutputStream(clientSocket.getOutputStream());
-            ois = new ObjectInputStream(this.clientSocket.getInputStream());
+            // ois = new ObjectInputStream(this.clientSocket.getInputStream());
             //in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
         } catch (IOException ex) {
             Logger.getLogger(SignableImplementation.class.getName()).log(Level.SEVERE, null, ex);
