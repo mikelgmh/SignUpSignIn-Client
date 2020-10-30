@@ -112,6 +112,7 @@ public class SignInController {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/signupsignin/view/Dashboard.fxml"));
         Parent root = (Parent) loader.load();
         DashboardController controller = ((DashboardController) loader.getController());
+        controller.setUser(user);
         controller.setStage(stage);
         controller.initStage(root);
     }
