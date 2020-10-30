@@ -26,8 +26,6 @@ import user.User;
 public class SignableImplementation implements Signable {
 
     private Socket clientSocket;
-    private PrintWriter out;
-    private BufferedReader in;
     private ObjectOutputStream oos;
     private ObjectInputStream ois;
 
@@ -37,7 +35,11 @@ public class SignableImplementation implements Signable {
 
     @Override
     public User signIn(User user) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Message message = new Message(user, TypeMessage.SIGN_IN);
+        startConnection("localhost", 3333);
+        sendMessage(message);
+        stopConnection();
+        return user;
     }
 
     @Override
@@ -58,6 +60,7 @@ public class SignableImplementation implements Signable {
             //resp = (String) ois.readObject();
             System.out.println("RESPUESTA::::: ");
             System.out.println(resp);
+           // resp = in.readLine();
             return resp;
         } catch (IOException ex) {
             Logger.getLogger(SignableImplementation.class.getName()).log(Level.SEVERE, null, ex);
