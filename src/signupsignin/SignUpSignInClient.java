@@ -5,7 +5,6 @@ package signupsignin;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 import signupsignin.controllers.SignInController;
 import interfaces.Signable;
 import javafx.application.Application;
@@ -17,7 +16,7 @@ import signupsignin.signable.SignableFactory;
 
 /**
  *
- * @author 
+ * @author
  */
 public class SignUpSignInClient extends Application {
 
@@ -27,7 +26,9 @@ public class SignUpSignInClient extends Application {
         Parent root = (Parent) loader.load();
         SignInController controller = ((SignInController) loader.getController());
         SignableFactory signableFactory = new SignableFactory();
+        Signable signable = signableFactory.getSignableImplementation();
 
+        controller.setSignable(signable);
         controller.setStage(stage);
         controller.initStage(root);
 
