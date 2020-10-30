@@ -84,6 +84,7 @@ public class SignInController {
         Parent root = (Parent) loader.load();
         SignUpController controller = ((SignUpController) loader.getController());
         controller.setStage(stage);
+        controller.setSignable(this.signableImplementation);
         controller.initStage(root);
     }
 

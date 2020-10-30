@@ -51,9 +51,11 @@ public class SignableImplementation implements Signable {
     public String sendMessage(Message msg) {
         String resp = "";
         try {
-            //out.println(msg);
+            // out.println(msg);
             oos.writeObject(msg);
             resp = in.readLine();
+            System.out.println("RESPUESTA::::: ");
+            System.out.println(resp);
             return resp;
         } catch (IOException ex) {
             Logger.getLogger(SignableImplementation.class.getName()).log(Level.SEVERE, null, ex);
@@ -64,7 +66,7 @@ public class SignableImplementation implements Signable {
     public void startConnection(String ip, int port) {
         try {
             clientSocket = new Socket(ip, port);
-            //out = new PrintWriter(clientSocket.getOutputStream(), true);
+            out = new PrintWriter(clientSocket.getOutputStream(), true);
             oos = new ObjectOutputStream(clientSocket.getOutputStream());
             in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
         } catch (IOException ex) {
