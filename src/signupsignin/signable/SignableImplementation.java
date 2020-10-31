@@ -13,7 +13,7 @@ import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import exceptions.UserNotFoundException;
+import exceptions.*;
 import message.Message;
 import message.TypeMessage;
 import user.User;
@@ -33,32 +33,42 @@ public class SignableImplementation implements Signable {
     }
 
     @Override
-    public User signIn(User user) throws UserNotFoundException {
+    public User signIn(User user) throws UserNotFoundException, ErrorConnectingDatabaseException,
+            PasswordMissmatchException, ErrorClosingDatabaseResources, QueryException {
         Message message = new Message(user, TypeMessage.SIGN_IN);
         this.sendMessage(message);
         message = this.getMessage();
         this.stopConnection();
-        // TODO: Pasar todo el switch que comprueba el tipo de mensaje a un metodo
+
+        // Comprobar el tipo de mensaje que ha recibido
         switch (message.getType()) {
             case USER_DOES_NOT_EXIST:
                 throw new UserNotFoundException();
+            case CONNECTION_ERROR:
+                throw new ErrorConnectingDatabaseException();
+            case LOGIN_ERROR:
+                throw new PasswordMissmatchException();
+            case DATABASE_ERROR:
+                throw new ErrorClosingDatabaseResources();
+            case QUERY_ERROR:
+                throw new QueryException();
             default:
                 break;
         }
-        return user;
+        return message.getUser();
     }
 
     @Override
     public User signUp(User user) {
         Message message = new Message(user, TypeMessage.SIGN_UP);
         this.sendMessage(message);
+        message = this.getMessage();
         this.stopConnection();
-        return user;
+        return message.getUser();
     }
 
     public void sendMessage(Message msg) {
         try {
-            // TODO: Coger los campos del socket desde el archivo de configuración
             clientSocket = new Socket("localhost", 3333);
             oos = new ObjectOutputStream(clientSocket.getOutputStream());
             oos.writeObject(msg); // Send message to server

@@ -6,6 +6,9 @@ package signupsignin;
  * and open the template in the editor.
  */
 import signupsignin.controllers.SignInController;
+
+import java.util.logging.Logger;
+
 import interfaces.Signable;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -18,6 +21,8 @@ import signupsignin.signable.SignableFactory;
  * @author
  */
 public class SignUpSignInClient extends Application {
+
+    private static final Logger logger = Logger.getLogger("signupsignin.SignUpSignInClient");
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -36,6 +41,7 @@ public class SignUpSignInClient extends Application {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        logger.info("Initializing the program.");
         launch(args);
     }
 }

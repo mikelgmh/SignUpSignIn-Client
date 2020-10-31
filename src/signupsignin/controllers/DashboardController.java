@@ -6,8 +6,10 @@
 package signupsignin.controllers;
 
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -46,11 +48,9 @@ public class DashboardController {
         stage.setScene(scene);
         stage.setTitle("Dashboard");
         stage.setResizable(false);
-        // FIXME: No funciona el getFormatterDate() cuando se inicia por primera vez, ya que la Date es NULL
-        // lbl_Connection.setText(getFormatterDate());
+        lbl_Connection.setText(getFormatterDate());
         lbl_Welcome.setText(user.getFullName());
         btn_Logout.setTooltip(new Tooltip("Return to Sign In"));
-
         stage.show();
     }
 
@@ -59,8 +59,10 @@ public class DashboardController {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/signupsignin/view/SignIn.fxml"));
         Parent root = (Parent) loader.load();
         SignInController controller = ((SignInController) loader.getController());
-        controller.setStage(stage);
+        // FIXME: Al volver a la pantalla de Sign In, que siga funcionando las excepciones del botón de Login.
+        controller.setStage(new Stage());
         controller.initStage(root);
+        stage.close();
     }
 
     public void setUser(User user) {
@@ -68,10 +70,9 @@ public class DashboardController {
     }
 
     private String getFormatterDate() {
-        // FIXME: No saca la fecha correctamente
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
-        String strDate = dateFormat.format(user.getLastAccess());
-        return strDate;
+        String pattern = "dd-M-yyyy HH:mm:ss";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern, new Locale("fr", "FR"));
+        String date = simpleDateFormat.format(new Date());
+        return date;
     }
-
 }

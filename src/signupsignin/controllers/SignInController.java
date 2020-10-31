@@ -5,15 +5,22 @@
  */
 package signupsignin.controllers;
 
+// Library
 import exceptions.ErrorClosingDatabaseResources;
 import exceptions.ErrorConnectingDatabaseException;
 import exceptions.PasswordMissmatchException;
 import exceptions.QueryException;
 import exceptions.UserNotFoundException;
 import interfaces.Signable;
-import javafx.event.ActionEvent;
+import user.User;
+
+// Java
 import java.io.IOException;
+import java.util.logging.Logger;
+
+// JavaFX
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -23,16 +30,16 @@ import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
-import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import user.User;
 
 /**
  *
  * @author Iker, Aketza
  */
 public class SignInController {
+
+    private static final Logger logger = Logger.getLogger("signupsignin.controllers.SignInController");
 
     private Stage stage;
     private Signable signableImplementation;
@@ -58,6 +65,7 @@ public class SignInController {
     }
 
     public void initStage(Parent root) {
+        logger.info("Loading the SignIn stage.");
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.setTitle("Login");
@@ -105,28 +113,38 @@ public class SignInController {
         try {
             // Enviamos los datos al SignableImplementation para hacer la comprobación con la BD.
             user = this.signableImplementation.signIn(user);
-            //TODO: Una vez los datos sean correctos, pasar a la ventana de Dashboard con los datos del User.
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/signupsignin/view/Dashboard.fxml"));
             Parent root = (Parent) loader.load();
             DashboardController controllerDashboard = ((DashboardController) loader.getController());
             controllerDashboard.setUser(user);
             controllerDashboard.initStage(root);
-
-            // FIXME: Al volver a la pantalla de Login, llamar otra vez al método setOnShowing para que todos los campos estén correctamente configurados.
             // Por último, cerramos la ventana de Login
             stage.close();
         } catch (ErrorConnectingDatabaseException ex) {
-
+            Alert alertConnectingToDatabase = new Alert(Alert.AlertType.ERROR);
+            alertConnectingToDatabase.setTitle("Error with the server");
+            alertConnectingToDatabase.setContentText("Error connecting to the server. Contact the Administrator.");
+            alertConnectingToDatabase.show();
         } catch (UserNotFoundException ex) {
-            Alert alertUserNotFound = new Alert(Alert.AlertType.ERROR);
+            Alert alertUserNotFound = new Alert(Alert.AlertType.WARNING);
             alertUserNotFound.setTitle("User not found");
+            alertUserNotFound.setContentText("The user entered does not exist.");
             alertUserNotFound.show();
         } catch (PasswordMissmatchException ex) {
-
+            Alert alertPasswordNoMatch = new Alert(Alert.AlertType.WARNING);
+            alertPasswordNoMatch.setTitle("The password does not match.");
+            alertPasswordNoMatch.setContentText("The password is incorrect.");
+            alertPasswordNoMatch.show();
         } catch (ErrorClosingDatabaseResources ex) {
-
+            Alert alertClosingDatabase = new Alert(Alert.AlertType.ERROR);
+            alertClosingDatabase.setTitle("Unexpected error");
+            alertClosingDatabase.setContentText("Unexpected error ocurred. Contact the Administrator.");
+            alertClosingDatabase.show();
         } catch (QueryException ex) {
-
+            Alert alertConnectingToDatabase = new Alert(Alert.AlertType.ERROR);
+            alertConnectingToDatabase.setTitle("Unexpected error");
+            alertConnectingToDatabase.setContentText("Unexpected error ocurred. Contact the Administrator.");
+            alertConnectingToDatabase.show();
         }
     }
 }
