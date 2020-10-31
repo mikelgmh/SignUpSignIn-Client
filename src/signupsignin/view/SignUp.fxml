@@ -9,42 +9,57 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="506.0" prefWidth="681.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="signupsignin.controllers.SignUpController">
+<Pane fx:id="signUpPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="607.0" prefWidth="697.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="signupsignin.controllers.SignUpController">
    <children>
       <Label fx:id="lbl_Firstname" layoutX="105.0" layoutY="105.0" text="Firstname" />
       <Label fx:id="lbl_Lastname" layoutX="390.0" layoutY="105.0" text="Lastname" />
-      <Label fx:id="lbl_Email" layoutX="107.0" layoutY="186.0" text="Email" />
-      <Label fx:id="lbl_Username" layoutX="107.0" layoutY="259.0" text="Username" />
-      <Label fx:id="lbl_Password" layoutX="105.0" layoutY="340.0" text="Password" />
-      <Label fx:id="lbl_RepeatPassword" layoutX="390.0" layoutY="340.0" text="Repeat Password" />
+      <Label fx:id="lbl_Email" layoutX="107.0" layoutY="209.0" text="Email" />
+      <Label fx:id="lbl_Username" layoutX="106.0" layoutY="318.0" text="Username" />
+      <Label fx:id="lbl_Password" layoutX="106.0" layoutY="422.0" text="Password" />
+      <Label fx:id="lbl_RepeatPassword" layoutX="391.0" layoutY="422.0" text="Repeat Password" />
       <TextField fx:id="txt_Firstname" layoutX="106.0" layoutY="135.0" />
       <TextField fx:id="txt_Lastname" layoutX="390.0" layoutY="135.0" />
-      <TextField fx:id="txt_Email" layoutX="107.0" layoutY="212.0" prefHeight="31.0" prefWidth="468.0" />
-      <TextField fx:id="txt_Username" layoutX="106.0" layoutY="289.0" prefHeight="31.0" prefWidth="186.0" />
-      <PasswordField fx:id="txt_Password" layoutX="106.0" layoutY="371.0" prefHeight="31.0" prefWidth="186.0" />
-      <PasswordField fx:id="txt_RepeatPassword" layoutX="390.0" layoutY="371.0" prefHeight="31.0" prefWidth="186.0" />
-      <Button fx:id="btn_SignUp" disable="true" layoutX="503.0" layoutY="447.0" mnemonicParsing="false" onAction="#SignUpButtonClickHandler" text="Sign Up" />
-      <Button fx:id="btn_Cancel" layoutX="421.0" layoutY="447.0" mnemonicParsing="false" text="Cancel" />
-      <Text layoutX="101.0" layoutY="69.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Sign Up">
+      <TextField fx:id="txt_Email" layoutX="107.0" layoutY="235.0" prefHeight="31.0" prefWidth="468.0" />
+      <TextField fx:id="txt_Username" layoutX="106.0" layoutY="344.0" prefHeight="31.0" prefWidth="186.0" />
+      <PasswordField fx:id="txt_Password" layoutX="107.0" layoutY="453.0" prefHeight="31.0" prefWidth="186.0" />
+      <PasswordField fx:id="txt_RepeatPassword" layoutX="391.0" layoutY="453.0" prefHeight="31.0" prefWidth="186.0" />
+      <Button fx:id="btn_SignUp" disable="true" layoutX="518.0" layoutY="543.0" mnemonicParsing="false" onAction="#signUpButtonClickHandler" text="Sign Up" />
+      <Button fx:id="btn_Cancel" layoutX="436.0" layoutY="543.0" mnemonicParsing="false" onAction="#backButtonClickHandler" text="Cancel" />
+      <Text layoutX="101.0" layoutY="56.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Sign Up">
          <font>
             <Font size="32.0" />
          </font>
       </Text>
       <ProgressIndicator fx:id="progress_username" layoutX="299.0" layoutY="292.0" prefHeight="25.0" prefWidth="28.0" visible="false" />
-      <Text fill="#686464" layoutX="108.0" layoutY="169.0" strokeType="OUTSIDE" strokeWidth="0.0" text="8 characters at least">
+      <Label fx:id="hint_Firstname" layoutX="108.0" layoutY="162.0" text="Label" textFill="#686464">
          <font>
-            <Font size="8.0" />
+            <Font size="11.0" />
          </font>
-      </Text>
-      <Text fill="#686464" layoutX="392.0" layoutY="174.0" strokeType="OUTSIDE" strokeWidth="0.0" text="8 characters at least">
+      </Label>
+      <Label fx:id="hint_Lastname" layoutX="390.0" layoutY="162.0" text="Label" textFill="#686464">
          <font>
-            <Font size="8.0" />
+            <Font size="11.0" />
          </font>
-      </Text>
-      <Text fill="#686464" layoutX="104.0" layoutY="256.0" strokeType="OUTSIDE" strokeWidth="0.0" text="8 characters at least">
+      </Label>
+      <Label fx:id="hint_Email" layoutX="108.0" layoutY="270.0" text="Label" textFill="#686464">
          <font>
-            <Font size="8.0" />
+            <Font size="11.0" />
          </font>
-      </Text>
+      </Label>
+      <Label fx:id="hint_Username" layoutX="108.0" layoutY="379.0" text="Label" textFill="#686464">
+         <font>
+            <Font size="11.0" />
+         </font>
+      </Label>
+      <Label fx:id="hint_Password" layoutX="108.0" layoutY="489.0" text="fferfer" textFill="#686464">
+         <font>
+            <Font size="11.0" />
+         </font>
+      </Label>
+      <Label fx:id="hint_RepeatPassword" layoutX="391.0" layoutY="489.0" text="Label" textFill="#686464">
+         <font>
+            <Font size="11.0" />
+         </font>
+      </Label>
    </children>
 </Pane>

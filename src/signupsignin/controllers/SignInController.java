@@ -84,6 +84,7 @@ public class SignInController {
         Parent root = (Parent) loader.load();
         SignUpController controller = ((SignUpController) loader.getController());
         controller.setStage(stage);
+        controller.setSignable(this.signableImplementation);
         controller.initStage(root);
     }
 
@@ -92,15 +93,17 @@ public class SignInController {
         //TODO: Comprobar los datos en la base de datos.
         //Guardamos la información de user y password dentro de la clase User
         User user = new User();
-        user.setLogin(this.txtUser.getText());
-        user.setPassword(this.txtPassword.getText());
+        user.setLogin(txtUser.getText());
+        user.setPassword(txtPassword.getText());
 
         //Enviamos los datos al SignableImplementation para hacer la comprobación con la BD.
-        // this.signableImplementation.signIn(user);
+        //user= this.signableImplementation.signIn(user);
+
         //TODO: Una vez los datos sean correctos, pasar a la ventana de Dashboard con los datos del User.
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/signupsignin/view/Dashboard.fxml"));
         Parent root = (Parent) loader.load();
         DashboardController controller = ((DashboardController) loader.getController());
+        controller.setUser(user);
         controller.setStage(stage);
         controller.initStage(root);
     }

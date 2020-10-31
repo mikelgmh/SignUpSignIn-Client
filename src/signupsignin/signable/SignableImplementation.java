@@ -9,6 +9,7 @@ import interfaces.Signable;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
@@ -25,9 +26,8 @@ import user.User;
 public class SignableImplementation implements Signable {
 
     private Socket clientSocket;
-    private PrintWriter out;
-    private BufferedReader in;
     private ObjectOutputStream oos;
+    private ObjectInputStream ois;
 
     public SignableImplementation() {
 
@@ -35,47 +35,42 @@ public class SignableImplementation implements Signable {
 
     @Override
     public User signIn(User user) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Message message = new Message(user, TypeMessage.SIGN_IN);
+        sendMessage(message);
+        stopConnection();
+        return user;
     }
 
     @Override
     public User signUp(User user) {
         Message message = new Message(user, TypeMessage.SIGN_UP);
-        this.startConnection("localhost", 3333);
         this.sendMessage(message);
         this.stopConnection();
         return user;
 
     }
 
-    public String sendMessage(Message msg) {
-        String resp = "";
+    public Message sendMessage(Message msg) {
+        Message message = null;
         try {
-            //out.println(msg);
-            oos.writeObject(msg);
-            resp = in.readLine();
-            return resp;
-        } catch (IOException ex) {
-            Logger.getLogger(SignableImplementation.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return resp;
-    }
 
-    public void startConnection(String ip, int port) {
-        try {
-            clientSocket = new Socket(ip, port);
-            //out = new PrintWriter(clientSocket.getOutputStream(), true);
+            clientSocket = new Socket("localhost", 3333);
             oos = new ObjectOutputStream(clientSocket.getOutputStream());
-            in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-        } catch (IOException ex) {
+            oos.writeObject(msg); // Send message to server
+
+            ois = new ObjectInputStream(this.clientSocket.getInputStream());
+            message = (Message) ois.readObject();
+
+            return message;
+        } catch (IOException | ClassNotFoundException ex) {
             Logger.getLogger(SignableImplementation.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return message;
     }
 
     public void stopConnection() {
         try {
-            in.close();
-            out.close();
+
             clientSocket.close();
         } catch (IOException ex) {
             Logger.getLogger(SignableImplementation.class.getName()).log(Level.SEVERE, null, ex);

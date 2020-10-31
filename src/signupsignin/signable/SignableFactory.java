@@ -10,17 +10,12 @@ import interfaces.Signable;
 
 /**
  *
- * @author Mikel
+ * @author Aketza
  */
 public class SignableFactory {
 
-    public Signable getSignableImplementation(String implementation) {
-        Signable signable = null;
-        switch (implementation) {
-            case "CLIENT_SIGNABLE":
-                signable = new SignableImplementation();
-                break;
-        }
-        return signable;
+    public Signable getSignableImplementation() {
+       return new SignableImplementation();
+        
     }
 }
