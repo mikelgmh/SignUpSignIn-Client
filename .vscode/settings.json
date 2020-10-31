@@ -1,0 +1,6 @@
+{
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar",
+        "d:\\Documents\\Proyectos\\SignInSignUp\\SignUpSignIn-Library\\dist\\SignUpSignIn-Library.jar"
+    ]
+}

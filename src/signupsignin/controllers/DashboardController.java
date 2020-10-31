@@ -27,35 +27,33 @@ public class DashboardController {
 
     private Stage stage;
     private User user;
-    
+
     @FXML
     private Button btn_Logout;
-    
+
     @FXML
     private Label lbl_Connection;
-    
+
     @FXML
     private Label lbl_Welcome;
-
-    public void setStage(Stage stage) {
-        this.stage = stage;
-    }
 
     public DashboardController() {
     }
 
     public void initStage(Parent root) {
         Scene scene = new Scene(root);
+        stage = new Stage();
         stage.setScene(scene);
         stage.setTitle("Dashboard");
         stage.setResizable(false);
-        lbl_Connection.setText(getFormatterDate());
+        // FIXME: No funciona el getFormatterDate() cuando se inicia por primera vez, ya que la Date es NULL
+        // lbl_Connection.setText(getFormatterDate());
         lbl_Welcome.setText(user.getFullName());
         btn_Logout.setTooltip(new Tooltip("Return to Sign In"));
-        
-        stage.show();  
+
+        stage.show();
     }
-    
+
     @FXML
     private void handleOnClickSignIn(ActionEvent event) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/signupsignin/view/SignIn.fxml"));
@@ -66,10 +64,11 @@ public class DashboardController {
     }
 
     public void setUser(User user) {
-        this.user=user;
+        this.user = user;
     }
-    
-    private String getFormatterDate (){
+
+    private String getFormatterDate() {
+        // FIXME: No saca la fecha correctamente
         DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
         String strDate = dateFormat.format(user.getLastAccess());
         return strDate;

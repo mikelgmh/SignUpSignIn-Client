@@ -5,6 +5,11 @@
  */
 package signupsignin.controllers;
 
+import exceptions.ErrorClosingDatabaseResources;
+import exceptions.ErrorConnectingDatabaseException;
+import exceptions.PasswordMissmatchException;
+import exceptions.QueryException;
+import exceptions.UserNotFoundException;
 import interfaces.Signable;
 import javafx.event.ActionEvent;
 import java.io.IOException;
@@ -13,10 +18,12 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
+import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import user.User;
@@ -90,21 +97,36 @@ public class SignInController {
 
     @FXML
     private void handleOnClickLogin(ActionEvent event) throws IOException {
-        //TODO: Comprobar los datos en la base de datos.
-        //Guardamos la información de user y password dentro de la clase User
+        // Guardamos la información de user y password dentro de la clase User
         User user = new User();
         user.setLogin(txtUser.getText());
         user.setPassword(txtPassword.getText());
 
-        //Enviamos los datos al SignableImplementation para hacer la comprobación con la BD.
-        //user= this.signableImplementation.signIn(user);
+        try {
+            // Enviamos los datos al SignableImplementation para hacer la comprobación con la BD.
+            user = this.signableImplementation.signIn(user);
+            //TODO: Una vez los datos sean correctos, pasar a la ventana de Dashboard con los datos del User.
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/signupsignin/view/Dashboard.fxml"));
+            Parent root = (Parent) loader.load();
+            DashboardController controllerDashboard = ((DashboardController) loader.getController());
+            controllerDashboard.setUser(user);
+            controllerDashboard.initStage(root);
 
-        //TODO: Una vez los datos sean correctos, pasar a la ventana de Dashboard con los datos del User.
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/signupsignin/view/Dashboard.fxml"));
-        Parent root = (Parent) loader.load();
-        DashboardController controller = ((DashboardController) loader.getController());
-        controller.setUser(user);
-        controller.setStage(stage);
-        controller.initStage(root);
+            // FIXME: Al volver a la pantalla de Login, llamar otra vez al método setOnShowing para que todos los campos estén correctamente configurados.
+            // Por último, cerramos la ventana de Login
+            stage.close();
+        } catch (ErrorConnectingDatabaseException ex) {
+
+        } catch (UserNotFoundException ex) {
+            Alert alertUserNotFound = new Alert(Alert.AlertType.ERROR);
+            alertUserNotFound.setTitle("User not found");
+            alertUserNotFound.show();
+        } catch (PasswordMissmatchException ex) {
+
+        } catch (ErrorClosingDatabaseResources ex) {
+
+        } catch (QueryException ex) {
+
+        }
     }
 }

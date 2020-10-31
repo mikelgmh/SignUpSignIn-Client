@@ -8,7 +8,6 @@ package signupsignin;
 import signupsignin.controllers.SignInController;
 import interfaces.Signable;
 import javafx.application.Application;
-import static javafx.application.Application.launch;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.stage.Stage;
@@ -31,7 +30,6 @@ public class SignUpSignInClient extends Application {
         controller.setSignable(signable);
         controller.setStage(stage);
         controller.initStage(root);
-
     }
 
     /**

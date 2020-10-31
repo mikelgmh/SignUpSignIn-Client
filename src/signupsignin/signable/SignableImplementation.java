@@ -6,15 +6,14 @@ package signupsignin.signable;
  * and open the template in the editor.
  */
 import interfaces.Signable;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import exceptions.UserNotFoundException;
 import message.Message;
 import message.TypeMessage;
 import user.User;
@@ -34,10 +33,18 @@ public class SignableImplementation implements Signable {
     }
 
     @Override
-    public User signIn(User user) {
+    public User signIn(User user) throws UserNotFoundException {
         Message message = new Message(user, TypeMessage.SIGN_IN);
-        sendMessage(message);
-        stopConnection();
+        this.sendMessage(message);
+        message = this.getMessage();
+        this.stopConnection();
+        // TODO: Pasar todo el switch que comprueba el tipo de mensaje a un metodo
+        switch (message.getType()) {
+            case USER_DOES_NOT_EXIST:
+                throw new UserNotFoundException();
+            default:
+                break;
+        }
         return user;
     }
 
@@ -47,30 +54,32 @@ public class SignableImplementation implements Signable {
         this.sendMessage(message);
         this.stopConnection();
         return user;
-
     }
 
-    public Message sendMessage(Message msg) {
-        Message message = null;
+    public void sendMessage(Message msg) {
         try {
-
+            // TODO: Coger los campos del socket desde el archivo de configuración
             clientSocket = new Socket("localhost", 3333);
             oos = new ObjectOutputStream(clientSocket.getOutputStream());
             oos.writeObject(msg); // Send message to server
-
-            ois = new ObjectInputStream(this.clientSocket.getInputStream());
-            message = (Message) ois.readObject();
-
-            return message;
-        } catch (IOException | ClassNotFoundException ex) {
+        } catch (IOException ex) {
             Logger.getLogger(SignableImplementation.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public Message getMessage() {
+        Message message = null;
+        try {
+            ois = new ObjectInputStream(this.clientSocket.getInputStream());
+            message = (Message) ois.readObject(); // Take message from the server
+        } catch (IOException | ClassNotFoundException e) {
+            // TODO: Logger de la excepcion de getMessage()
         }
         return message;
     }
 
     public void stopConnection() {
         try {
-
             clientSocket.close();
         } catch (IOException ex) {
             Logger.getLogger(SignableImplementation.class.getName()).log(Level.SEVERE, null, ex);

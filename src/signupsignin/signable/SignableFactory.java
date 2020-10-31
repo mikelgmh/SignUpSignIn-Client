@@ -5,7 +5,6 @@
  */
 package signupsignin.signable;
 
-import signupsignin.signable.SignableImplementation;
 import interfaces.Signable;
 
 /**
@@ -15,7 +14,6 @@ import interfaces.Signable;
 public class SignableFactory {
 
     public Signable getSignableImplementation() {
-       return new SignableImplementation();
-        
+        return new SignableImplementation();
     }
 }
