@@ -1,6 +1,21 @@
 {
     "java.project.referencedLibraries": [
         "lib/**/*.jar",
-        "d:\\Documents\\Proyectos\\SignInSignUp\\SignUpSignIn-Library\\dist\\SignUpSignIn-Library.jar"
+        "d:\\Documents\\Proyectos\\SignInSignUp\\SignUpSignIn-Library\\dist\\SignUpSignIn-Library.jar",
+        "d:\\Downloads\\Telegram Desktop\\TestFXLibrary\\hamcrest-junit-2.0.0.0.jar",
+        "d:\\Downloads\\Telegram Desktop\\TestFXLibrary\\hamcrest-junit-2.0.0.0-javadoc.jar",
+        "d:\\Downloads\\Telegram Desktop\\TestFXLibrary\\hamcrest-junit-2.0.0.0-sources.jar",
+        "d:\\Downloads\\Telegram Desktop\\TestFXLibrary\\java-hamcrest-2.0.0.0.jar",
+        "d:\\Downloads\\Telegram Desktop\\TestFXLibrary\\java-hamcrest-2.0.0.0-javadoc.jar",
+        "d:\\Downloads\\Telegram Desktop\\TestFXLibrary\\java-hamcrest-2.0.0.0-sources.jar",
+        "d:\\Downloads\\Telegram Desktop\\TestFXLibrary\\junit-4.12.jar",
+        "d:\\Downloads\\Telegram Desktop\\TestFXLibrary\\junit-4.12-javadoc.jar",
+        "d:\\Downloads\\Telegram Desktop\\TestFXLibrary\\junit-4.12-sources.jar",
+        "d:\\Downloads\\Telegram Desktop\\TestFXLibrary\\testfx-core-4.0.13-alpha.jar",
+        "d:\\Downloads\\Telegram Desktop\\TestFXLibrary\\testfx-core-4.0.13-alpha-javadoc.jar",
+        "d:\\Downloads\\Telegram Desktop\\TestFXLibrary\\testfx-core-4.0.13-alpha-sources.jar",
+        "d:\\Downloads\\Telegram Desktop\\TestFXLibrary\\testfx-junit-4.0.13-alpha.jar",
+        "d:\\Downloads\\Telegram Desktop\\TestFXLibrary\\testfx-junit-4.0.13-alpha-javadoc.jar",
+        "d:\\Downloads\\Telegram Desktop\\TestFXLibrary\\testfx-junit-4.0.13-alpha-sources.jar"
     ]
 }

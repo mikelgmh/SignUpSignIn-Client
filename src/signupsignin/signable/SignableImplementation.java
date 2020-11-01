@@ -83,7 +83,7 @@ public class SignableImplementation implements Signable {
             ois = new ObjectInputStream(this.clientSocket.getInputStream());
             message = (Message) ois.readObject(); // Take message from the server
         } catch (IOException | ClassNotFoundException e) {
-            // TODO: Logger de la excepcion de getMessage()
+
         }
         return message;
     }

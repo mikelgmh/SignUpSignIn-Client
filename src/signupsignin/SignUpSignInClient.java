@@ -7,6 +7,7 @@ package signupsignin;
  */
 import signupsignin.controllers.SignInController;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import interfaces.Signable;
@@ -31,7 +32,6 @@ public class SignUpSignInClient extends Application {
         SignInController controller = ((SignInController) loader.getController());
         SignableFactory signableFactory = new SignableFactory();
         Signable signable = signableFactory.getSignableImplementation();
-
         controller.setSignable(signable);
         controller.setStage(stage);
         controller.initStage(root);
@@ -41,7 +41,7 @@ public class SignUpSignInClient extends Application {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        logger.info("Initializing the program.");
+        logger.log(Level.INFO, "Initializing the program.");
         launch(args);
     }
 }

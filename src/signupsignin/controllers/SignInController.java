@@ -16,6 +16,7 @@ import user.User;
 
 // Java
 import java.io.IOException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 // JavaFX
@@ -65,7 +66,7 @@ public class SignInController {
     }
 
     public void initStage(Parent root) {
-        logger.info("Loading the SignIn stage.");
+        logger.log(Level.INFO, "Loading the SignIn stage.");
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.setTitle("Login");
@@ -74,6 +75,7 @@ public class SignInController {
         txtUser.textProperty().addListener(this::textChanged);
         txtPassword.textProperty().addListener(this::textChanged);
         stage.show();
+        logger.log(Level.INFO, "SignIn stage loaded.");
     }
 
     private void handleWindowShowing(WindowEvent event) {
@@ -82,7 +84,6 @@ public class SignInController {
         txtPassword.setPromptText("Insert password");
         btnSignIn.setTooltip(new Tooltip("Send identification values"));
         btnSignUp.setTooltip(new Tooltip("Create a new account"));
-
     }
 
     private void textChanged(ObservableValue observable, String oldValue, String newValue) {
@@ -105,6 +106,7 @@ public class SignInController {
 
     @FXML
     private void handleOnClickLogin(ActionEvent event) throws IOException {
+        logger.log(Level.INFO, "Signing in.");
         // Guardamos la información de user y password dentro de la clase User
         User user = new User();
         user.setLogin(txtUser.getText());
@@ -120,31 +122,37 @@ public class SignInController {
             controllerDashboard.initStage(root);
             // Por último, cerramos la ventana de Login
             stage.close();
+            logger.log(Level.INFO, "Signed In successfully");
         } catch (ErrorConnectingDatabaseException ex) {
+            logger.log(Level.WARNING, "Error connecting to the database.");
             Alert alertConnectingToDatabase = new Alert(Alert.AlertType.ERROR);
             alertConnectingToDatabase.setTitle("Error with the server");
             alertConnectingToDatabase.setContentText("Error connecting to the server. Contact the Administrator.");
-            alertConnectingToDatabase.show();
+            alertConnectingToDatabase.showAndWait();
         } catch (UserNotFoundException ex) {
+            logger.log(Level.WARNING, "User not found.");
             Alert alertUserNotFound = new Alert(Alert.AlertType.WARNING);
             alertUserNotFound.setTitle("User not found");
             alertUserNotFound.setContentText("The user entered does not exist.");
-            alertUserNotFound.show();
+            alertUserNotFound.showAndWait();
         } catch (PasswordMissmatchException ex) {
+            logger.log(Level.WARNING, "The password inserted does not match.");
             Alert alertPasswordNoMatch = new Alert(Alert.AlertType.WARNING);
             alertPasswordNoMatch.setTitle("The password does not match.");
             alertPasswordNoMatch.setContentText("The password is incorrect.");
-            alertPasswordNoMatch.show();
+            alertPasswordNoMatch.showAndWait();
         } catch (ErrorClosingDatabaseResources ex) {
+            logger.log(Level.WARNING, "Error closing the database resources.");
             Alert alertClosingDatabase = new Alert(Alert.AlertType.ERROR);
             alertClosingDatabase.setTitle("Unexpected error");
             alertClosingDatabase.setContentText("Unexpected error ocurred. Contact the Administrator.");
-            alertClosingDatabase.show();
+            alertClosingDatabase.showAndWait();
         } catch (QueryException ex) {
+            logger.log(Level.WARNING, "Error connecting to the database.");
             Alert alertConnectingToDatabase = new Alert(Alert.AlertType.ERROR);
             alertConnectingToDatabase.setTitle("Unexpected error");
             alertConnectingToDatabase.setContentText("Unexpected error ocurred. Contact the Administrator.");
-            alertConnectingToDatabase.show();
+            alertConnectingToDatabase.showAndWait();
         }
     }
 }
