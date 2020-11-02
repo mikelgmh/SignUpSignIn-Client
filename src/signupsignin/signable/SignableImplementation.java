@@ -5,6 +5,9 @@ package signupsignin.signable;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+import exceptions.ErrorConnectingDatabaseException;
+import exceptions.ErrorConnectingServerException;
+import exceptions.UserAlreadyExistException;
 import interfaces.Signable;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -34,7 +37,7 @@ public class SignableImplementation implements Signable {
     }
 
     @Override
-    public User signIn(User user) {
+    public User signIn(User user) throws ErrorConnectingServerException {
         Message message = new Message(user, TypeMessage.SIGN_IN);
         sendMessage(message);
         stopConnection();
@@ -42,15 +45,16 @@ public class SignableImplementation implements Signable {
     }
 
     @Override
-    public User signUp(User user) {
+    public User signUp(User user) throws UserAlreadyExistException, ErrorConnectingServerException, ErrorConnectingDatabaseException {
         Message message = new Message(user, TypeMessage.SIGN_UP);
-        this.sendMessage(message);
+        message = this.sendMessage(message);
         this.stopConnection();
+        this.checkMessageForExceptions(message);
         return user;
 
     }
 
-    public Message sendMessage(Message msg) {
+    public Message sendMessage(Message msg) throws ErrorConnectingServerException {
         Message message = null;
         try {
 
@@ -64,16 +68,28 @@ public class SignableImplementation implements Signable {
             return message;
         } catch (IOException | ClassNotFoundException ex) {
             Logger.getLogger(SignableImplementation.class.getName()).log(Level.SEVERE, null, ex);
+            throw new ErrorConnectingServerException();
         }
-        return message;
     }
 
-    public void stopConnection() {
-        try {
+    public void checkMessageForExceptions(Message message) throws UserAlreadyExistException, ErrorConnectingServerException, ErrorConnectingDatabaseException {
+        switch (message.getType()) {
+            case CONNECTION_ERROR:
+                throw new ErrorConnectingServerException();
+            case USER_EXISTS:
+                throw new UserAlreadyExistException(message.getUser());
+            case DATABASE_ERROR:
+                throw new ErrorConnectingDatabaseException();
 
+        }
+    }
+
+    public void stopConnection() throws ErrorConnectingServerException {
+        try {
             clientSocket.close();
         } catch (IOException ex) {
             Logger.getLogger(SignableImplementation.class.getName()).log(Level.SEVERE, null, ex);
+            throw new ErrorConnectingServerException();
         }
     }
 }
