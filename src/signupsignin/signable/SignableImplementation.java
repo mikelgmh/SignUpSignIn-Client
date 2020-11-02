@@ -5,9 +5,6 @@ package signupsignin.signable;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-import exceptions.ErrorConnectingDatabaseException;
-import exceptions.ErrorConnectingServerException;
-import exceptions.UserAlreadyExistException;
 import interfaces.Signable;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -36,8 +33,7 @@ public class SignableImplementation implements Signable {
     }
 
     @Override
-    public User signIn(User user) throws UserNotFoundException, ErrorConnectingDatabaseException,
-            PasswordMissmatchException, ErrorClosingDatabaseResources, QueryException, ErrorConnectingServerException {
+    public User signIn(User user) throws UserNotFoundException, ErrorConnectingDatabaseException, PasswordMissmatchException, ErrorClosingDatabaseResources, QueryException, ErrorConnectingServerException {
         Message message = new Message(user, TypeMessage.SIGN_IN);
         this.sendMessage(message);
         message = this.getMessage();
@@ -62,7 +58,7 @@ public class SignableImplementation implements Signable {
     }
 
     @Override
-    public User signUp(User user) throws UserAlreadyExistException, ErrorConnectingServerException, ErrorConnectingDatabaseException, QueryException {
+    public User signUp(User user) throws ErrorConnectingDatabaseException, UserAlreadyExistException, QueryException, ErrorConnectingServerException {
         Message message = new Message(user, TypeMessage.SIGN_UP);
         this.sendMessage(message);
         message = getMessage();
@@ -88,12 +84,8 @@ public class SignableImplementation implements Signable {
             clientSocket = new Socket("localhost", 3333);
             oos = new ObjectOutputStream(clientSocket.getOutputStream());
             oos.writeObject(msg); // Send message to server
-
-            ois = new ObjectInputStream(this.clientSocket.getInputStream());
-            message = (Message) ois.readObject();
-
             return message;
-        } catch (IOException | ClassNotFoundException ex) {
+        } catch (IOException ex) {
             Logger.getLogger(SignableImplementation.class.getName()).log(Level.SEVERE, null, ex);
             throw new ErrorConnectingServerException();
         }
