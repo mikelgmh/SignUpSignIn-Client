@@ -17,6 +17,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import exceptions.*;
+import java.util.ResourceBundle;
 import message.Message;
 import message.TypeMessage;
 import user.User;
@@ -26,15 +27,16 @@ import user.User;
  * @author Mikel
  */
 public class SignableImplementation implements Signable {
-
+    
     private Socket clientSocket;
     private ObjectOutputStream oos;
     private ObjectInputStream ois;
-
+    private ResourceBundle rb = ResourceBundle.getBundle("config.config");
+    
     public SignableImplementation() {
-
+        
     }
-
+    
     @Override
     public User signIn(User user) throws UserNotFoundException, ErrorConnectingDatabaseException,
             PasswordMissmatchException, ErrorClosingDatabaseResources, QueryException, ErrorConnectingServerException {
@@ -60,7 +62,7 @@ public class SignableImplementation implements Signable {
         }
         return message.getUser();
     }
-
+    
     @Override
     public User signUp(User user) throws UserAlreadyExistException, ErrorConnectingServerException, ErrorConnectingDatabaseException, QueryException {
         Message message = new Message(user, TypeMessage.SIGN_UP);
@@ -79,23 +81,18 @@ public class SignableImplementation implements Signable {
         }
         return user;
     }
-
+    
     public void sendMessage(Message msg) throws ErrorConnectingServerException {
         try {
-            Message message = null;
-            clientSocket = new Socket("localhost", 3333);
+            clientSocket = new Socket(rb.getString("SOCKET_HOST"), Integer.parseInt(rb.getString("SOCKET_PORT")));
             oos = new ObjectOutputStream(clientSocket.getOutputStream());
             oos.writeObject(msg); // Send message to server
-            
-            //ois = new ObjectInputStream(this.clientSocket.getInputStream());
-            // message = (Message) ois.readObject();
-            
-            //return message;
         } catch (IOException ex) {
             Logger.getLogger(SignableImplementation.class.getName()).log(Level.SEVERE, null, ex);
+            throw new ErrorConnectingServerException();
         }
     }
-
+    
     public Message getMessage() throws ErrorConnectingServerException {
         Message message = null;
         try {
@@ -107,7 +104,7 @@ public class SignableImplementation implements Signable {
             throw new ErrorConnectingServerException();
         }
     }
-
+    
     public void stopConnection() throws ErrorConnectingServerException {
         try {
             clientSocket.close();
