@@ -6,25 +6,34 @@
 package signupsignin.controllers;
 
 import exceptions.ErrorConnectingDatabaseException;
+import exceptions.ErrorConnectingServerException;
 import exceptions.QueryException;
 import exceptions.UserAlreadyExistException;
 import interfaces.Signable;
+import java.awt.Color;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import signupsignin.util.ValidationUtils;
 import user.User;
 import user.UserPrivilege;
 import user.UserStatus;
@@ -35,6 +44,7 @@ import user.UserStatus;
  */
 public class SignUpController {
 
+    private ValidationUtils validationUtils = new ValidationUtils();
     private static final String MIN_THREE_CHARACTERS = "Min 3 characters";
     private static final String ENTER_VALID_EMAIL = "Type a valid email.";
     private static final String PASSWORD_CONDITIONS = "- Between 8 and 25 characters\n- Uppercase and Lowercase letters\n- One number and special character at least";
@@ -78,7 +88,7 @@ public class SignUpController {
     private TextField txt_Username;
 
     @FXML
-    private ProgressIndicator progress_username;
+    private ProgressIndicator progress_indicator;
 
     @FXML
     private PasswordField txt_Password;
@@ -121,6 +131,8 @@ public class SignUpController {
 
         this.setListeners();
         stage.setScene(scene);
+        scene.getStylesheets().add(getClass().getResource("/signupsignin/view/errorStyle.css").toExternalForm());
+
         stage.setTitle("Register");
         stage.setResizable(false);
         stage.show();
@@ -213,6 +225,8 @@ public class SignUpController {
     }
 
     public void signUpButtonClickHandler() {
+        progress_indicator.setVisible(true);
+        btn_SignUp.setDisable(true);
         try {
             User user = new User();
             user.setEmail(this.txt_Email.getText());
@@ -222,12 +236,43 @@ public class SignUpController {
             user.setStatus(UserStatus.ENABLED);
             user.setLogin(this.txt_Username.getText());
             this.signableImplementation.signUp(user);
+            btn_SignUp.setDisable(false);
+            Alert alert = new Alert(AlertType.CONFIRMATION);
+            alert.setTitle("Signed Up Successfully");
+            String s = "You have been signed up. Do you want to go to the login screen?";
+            alert.setContentText(s);
+            Optional<ButtonType> result = alert.showAndWait();
+            if ((result.isPresent()) && (result.get() == ButtonType.OK)) {
+                this.changeStageToLogin();
+            }
         } catch (ErrorConnectingDatabaseException ex) {
             Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, null, ex);
+            btn_SignUp.setDisable(false);
         } catch (UserAlreadyExistException ex) {
-            Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, null, ex);
+            this.btn_SignUp.setDisable(true);
+            this.hint_Username.setText("The username or the email already exists.");
+            this.hint_Email.setText("The username or the email already exists.");
+            this.hint_Email.setTextFill(javafx.scene.paint.Color.RED);
+            this.hint_Username.setTextFill(javafx.scene.paint.Color.RED);
+            this.validationUtils.addClass(this.txt_Email, "error", Boolean.TRUE);
+            this.validationUtils.addClass(this.txt_Username, "error", Boolean.TRUE);
         } catch (QueryException ex) {
             Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, null, ex);
+            btn_SignUp.setDisable(false);
+        } catch (ErrorConnectingServerException ex) {
+            Alert alert = new Alert(AlertType.CONFIRMATION);
+            alert.setTitle("Error connecting server");
+            String s = "The server couldn't be reached. Try again?";
+            alert.setContentText(s);
+            Optional<ButtonType> result = alert.showAndWait();
+            if ((result.isPresent()) && (result.get() == ButtonType.OK)) {
+                this.signUpButtonClickHandler();
+            }
+            Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, null, ex);
+            btn_SignUp.setDisable(false);
+        } finally {
+            progress_indicator.setVisible(false);
+
         }
     }
 
@@ -248,7 +293,14 @@ public class SignUpController {
     }
 
     public void backButtonClickHandler() {
-        this.changeStageToLogin();
+        Alert alert = new Alert(AlertType.CONFIRMATION);
+        alert.setTitle("Go back");
+        String s = "Are you sure you want to go back? The data will be lost.";
+        alert.setContentText(s);
+        Optional<ButtonType> result = alert.showAndWait();
+        if ((result.isPresent()) && (result.get() == ButtonType.OK)) {
+            this.changeStageToLogin();
+        }
     }
 
 }

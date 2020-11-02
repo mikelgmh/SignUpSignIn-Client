@@ -11,6 +11,7 @@
 
 <Pane fx:id="signUpPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="607.0" prefWidth="697.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="signupsignin.controllers.SignUpController">
    <children>
+      <ProgressIndicator fx:id="progress_indicator" layoutX="39.0" layoutY="542.0" prefHeight="31.0" prefWidth="37.0" visible="false" />
       <Label fx:id="lbl_Firstname" layoutX="105.0" layoutY="105.0" text="Firstname" />
       <Label fx:id="lbl_Lastname" layoutX="390.0" layoutY="105.0" text="Lastname" />
       <Label fx:id="lbl_Email" layoutX="107.0" layoutY="209.0" text="Email" />
@@ -30,7 +31,6 @@
             <Font size="32.0" />
          </font>
       </Text>
-      <ProgressIndicator fx:id="progress_username" layoutX="299.0" layoutY="292.0" prefHeight="25.0" prefWidth="28.0" visible="false" />
       <Label fx:id="hint_Firstname" layoutX="108.0" layoutY="162.0" text="Label" textFill="#686464">
          <font>
             <Font size="11.0" />
