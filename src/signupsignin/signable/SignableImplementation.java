@@ -78,24 +78,21 @@ public class SignableImplementation implements Signable {
                 throw new QueryException();
         }
         return user;
-
     }
 
-    public Message sendMessage(Message msg) throws ErrorConnectingServerException {
-        Message message = null;
+    public void sendMessage(Message msg) throws ErrorConnectingServerException {
         try {
-
+            Message message = null;
             clientSocket = new Socket("localhost", 3333);
             oos = new ObjectOutputStream(clientSocket.getOutputStream());
             oos.writeObject(msg); // Send message to server
-
-            ois = new ObjectInputStream(this.clientSocket.getInputStream());
-            message = (Message) ois.readObject();
-
-            return message;
-        } catch (IOException | ClassNotFoundException ex) {
+            
+            //ois = new ObjectInputStream(this.clientSocket.getInputStream());
+            // message = (Message) ois.readObject();
+            
+            //return message;
+        } catch (IOException ex) {
             Logger.getLogger(SignableImplementation.class.getName()).log(Level.SEVERE, null, ex);
-            throw new ErrorConnectingServerException();
         }
     }
 
