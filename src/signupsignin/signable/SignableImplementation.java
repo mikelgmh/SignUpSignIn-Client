@@ -27,28 +27,28 @@ import user.User;
  * @author Mikel
  */
 public class SignableImplementation extends Thread implements Signable {
-    
-    private Socket clientSocket;
-    private ObjectOutputStream oos;
-    private ObjectInputStream ois;
-    private ResourceBundle rb = ResourceBundle.getBundle("config.config");
-    
+
     public SignableImplementation() {
-        
+
     }
-    
+
     @Override
-    public void run(){
-        
+    public void run() {
+
     }
-    
+
     @Override
     public User signIn(User user) throws UserNotFoundException, ErrorConnectingDatabaseException,
             PasswordMissmatchException, ErrorClosingDatabaseResources, QueryException, ErrorConnectingServerException {
         Message message = new Message(user, TypeMessage.SIGN_IN);
-        this.sendMessage(message);
-        message = this.getMessage();
-        this.stopConnection();
+        ServerConnector serverConnector = new ServerConnector(message);
+        try {
+            serverConnector.start();
+            serverConnector.join();
+        } catch (InterruptedException ex) {
+            Logger.getLogger(SignableImplementation.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        message = serverConnector.getMessage();
 
         // Comprobar el tipo de mensaje que ha recibido
         switch (message.getType()) {
@@ -67,13 +67,19 @@ public class SignableImplementation extends Thread implements Signable {
         }
         return message.getUser();
     }
-    
+
     @Override
     public User signUp(User user) throws UserAlreadyExistException, ErrorConnectingServerException, ErrorConnectingDatabaseException, QueryException {
         Message message = new Message(user, TypeMessage.SIGN_UP);
-        this.sendMessage(message);
-        message = this.getMessage();
-        this.stopConnection();
+        ServerConnector serverConnector = new ServerConnector(message);
+        try {
+            serverConnector.start();
+            serverConnector.join();
+        } catch (InterruptedException ex) {
+            Logger.getLogger(SignableImplementation.class.getName()).log(Level.SEVERE, null, ex);
+            throw new ErrorConnectingServerException();
+        }
+        message = serverConnector.getMessage();
         switch (message.getType()) {
             case CONNECTION_ERROR:
                 throw new ErrorConnectingServerException();
@@ -86,7 +92,36 @@ public class SignableImplementation extends Thread implements Signable {
         }
         return user;
     }
-    
+
+}
+
+class ServerConnector extends Thread {
+
+    private ObjectOutputStream oos;
+    private ObjectInputStream ois;
+    private ResourceBundle rb = ResourceBundle.getBundle("config.config");
+    private Socket clientSocket;
+    private Message message = null;
+
+    public Message getMessage() {
+        return message;
+    }
+
+    public ServerConnector(Message message) {
+        this.message = message;
+    }
+
+    @Override
+    public void run() {
+        try {
+            this.sendMessage(message);
+            this.getMessageFromServer();
+            this.stopConnection();
+        } catch (ErrorConnectingServerException ex) {
+            Logger.getLogger(ServerConnector.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     public void sendMessage(Message msg) throws ErrorConnectingServerException {
         try {
             clientSocket = new Socket(rb.getString("SOCKET_HOST"), Integer.parseInt(rb.getString("SOCKET_PORT")));
@@ -97,19 +132,17 @@ public class SignableImplementation extends Thread implements Signable {
             throw new ErrorConnectingServerException();
         }
     }
-    
-    public Message getMessage() throws ErrorConnectingServerException {
-        Message message = null;
+
+    public void getMessageFromServer() throws ErrorConnectingServerException {
         try {
             ois = new ObjectInputStream(this.clientSocket.getInputStream());
             message = (Message) ois.readObject(); // Take message from the server
-            return message;
         } catch (IOException | ClassNotFoundException ex) {
             Logger.getLogger(SignableImplementation.class.getName()).log(Level.SEVERE, null, ex);
             throw new ErrorConnectingServerException();
         }
     }
-    
+
     public void stopConnection() throws ErrorConnectingServerException {
         try {
             clientSocket.close();
