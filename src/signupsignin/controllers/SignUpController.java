@@ -40,12 +40,14 @@ import user.UserPrivilege;
 import user.UserStatus;
 
 /**
+ * This class handles the interaction of the user with the graphic user
+ * interface.
  *
  * @author Mikel
  */
 public class SignUpController {
 
-    private ValidationUtils validationUtils = new ValidationUtils();
+    private ValidationUtils validationUtils = new ValidationUtils(); // Useful to reuse some validations in different controllers.
     private static final String MIN_THREE_CHARACTERS = "Min 3 characters";
     private static final String ENTER_VALID_EMAIL = "Type a valid email.";
     private static final String PASSWORD_CONDITIONS = "- Between 8 and 25 characters\n- Uppercase and Lowercase letters\n- One number and special character at least";
@@ -109,15 +111,26 @@ public class SignUpController {
         this.signableImplementation = signable;
     }
 
+    /**
+     * The method that is executed when we initialize the sign up.
+     *
+     * @param parent The base object for all nodes that have children in the
+     * scene graph.
+     */
     public void initStage(Parent parent) {
 
+        // Sets the hint texts to the inputs.
         hint_Firstname.setText(MIN_THREE_CHARACTERS);
         hint_Lastname.setText(MIN_THREE_CHARACTERS);
         hint_Email.setText(ENTER_VALID_EMAIL);
         hint_Username.setText(MIN_THREE_CHARACTERS);
         hint_Password.setText(PASSWORD_CONDITIONS);
-        btn_SignUp.setTooltip(new Tooltip("Click to sign up"));
         hint_RepeatPassword.setText("");
+
+        // Adds tooltips
+        btn_SignUp.setTooltip(new Tooltip("Click to sign up"));
+
+        // Sets custom properties to the inputs. These properties show the status of the validation of them.
         txt_Email.getProperties().put("emailValidator", false);
         txt_Firstname.getProperties().put("minLengthValidator", false);
         txt_Lastname.getProperties().put("minLengthValidator", false);
@@ -126,35 +139,44 @@ public class SignUpController {
         txt_RepeatPassword.getProperties().put("passwordRequirements", false);
         txt_RepeatPassword.getProperties().put("passwordsMatch", false);
 
+        // Creates a scena and a stage and opens the window.
         Scene scene = new Scene(parent);
-
+        Stage stage = new Stage();
         this.setListeners();
+        this.setStage(stage);
         stage.setScene(scene);
-        scene.getStylesheets().add(getClass().getResource("/signupsignin/view/errorStyle.css").toExternalForm());
 
-        stage.setTitle("Register");
-        stage.setResizable(false);
+        scene.getStylesheets().add(getClass().getResource("/signupsignin/view/errorStyle.css").toExternalForm()); // Imports the CSS file used for errors in some inputs.
+        stage.setTitle("Sign Up"); // Sets the title of the window
+        stage.setResizable(false); // Prevents the user to resize the window.
         stage.show();
     }
 
+    /**
+     * Sets all the listeners used in this window. Here we add the validations.
+     */
     public void setListeners() {
+        // Listener for the Firstname field.
         this.txt_Firstname.textProperty().addListener((obs, oldText, newText) -> {
-            this.validationUtils.minLength(this.txt_Firstname, 3, newText, "minLengthValidator");
-            this.validationUtils.textLimiter(this.txt_Firstname, 20, newText);
-            this.validate();
+            this.validationUtils.minLength(this.txt_Firstname, 3, newText, "minLengthValidator"); // Adds a min lenght validator
+            this.validationUtils.textLimiter(this.txt_Firstname, 20, newText); // Limits the input to 20 characters
+            this.validate(); // Executes the validation.
         });
 
+        // Listener for the Lastname field.
         this.txt_Lastname.textProperty().addListener((obs, oldText, newText) -> {
             this.validationUtils.minLength(this.txt_Lastname, 3, newText, "minLengthValidator");
             this.validationUtils.textLimiter(this.txt_Lastname, 20, newText);
-
             this.validate();
         });
 
+        // Validation for the Email field
         this.txt_Email.textProperty().addListener((obs, oldText, newText) -> {
             this.validationUtils.minLength(this.txt_Email, 3, newText, "minLengthValidator");
             this.validationUtils.textLimiter(this.txt_Email, 80, newText);
-            this.validationUtils.regexValidator(this.emailRegexp, this.txt_Email, newText.toLowerCase(), "emailValidator");
+            this.validationUtils.regexValidator(this.emailRegexp, this.txt_Email, newText.toLowerCase(), "emailValidator"); // Adds a regex validation to check if the email is correct
+
+            // Changes the color of the inputs when the user types.
             this.hint_Email.setTextFill(greyColor);
             hint_Email.setText(ENTER_VALID_EMAIL);
             this.validationUtils.addClass(this.txt_Email, "error", Boolean.FALSE);
@@ -170,18 +192,36 @@ public class SignUpController {
             this.validate();
         });
         this.txt_Password.textProperty().addListener((obs, oldText, newText) -> {
-            this.validationUtils.comparePasswords(this.txt_Password, this.txt_RepeatPassword, "passwordsMatch");
+            Boolean passwordsMatch = this.validationUtils.comparePasswords(this.txt_Password, this.txt_RepeatPassword, "passwordsMatch");
             this.validationUtils.textLimiter(this.txt_Password, 25, newText);
             this.validationUtils.regexValidator(this.passRegexp, this.txt_Password, newText, "passwordRequirements");
+            this.setPasswordFieldsError(passwordsMatch);
             this.validate();
         });
         this.txt_RepeatPassword.textProperty().addListener((obs, oldText, newText) -> {
-            this.validationUtils.comparePasswords(this.txt_Password, this.txt_RepeatPassword, "passwordsMatch");
+            Boolean passwordsMatch = this.validationUtils.comparePasswords(this.txt_Password, this.txt_RepeatPassword, "passwordsMatch");
             this.validationUtils.textLimiter(this.txt_RepeatPassword, 25, newText);
             this.validationUtils.regexValidator(this.passRegexp, this.txt_RepeatPassword, newText, "passwordRequirements");
+            this.setPasswordFieldsError(passwordsMatch);
             this.validate();
         });
 
+    }
+
+    public void setPasswordFieldsError(Boolean passwordsMatch) {
+        if (!passwordsMatch) {
+            this.hint_Password.setTextFill(Color.RED);
+            this.validationUtils.addClass(this.txt_Password, "error", Boolean.TRUE);
+            this.hint_Password.setText("Passwords don't match");
+            this.hint_RepeatPassword.setTextFill(Color.RED);
+            this.validationUtils.addClass(this.txt_RepeatPassword, "error", Boolean.TRUE);
+        } else {
+            this.hint_Password.setTextFill(greyColor);
+            this.validationUtils.addClass(this.txt_Password, "error", Boolean.FALSE);
+            this.hint_Password.setText(PASSWORD_CONDITIONS);
+            this.hint_RepeatPassword.setTextFill(greyColor);
+            this.validationUtils.addClass(this.txt_RepeatPassword, "error", Boolean.FALSE);
+        }
     }
 
     public void validate() {
@@ -255,6 +295,7 @@ public class SignUpController {
         Parent root = null;
         try {
             root = (Parent) loader.load();
+            stage.close();
         } catch (IOException ex) {
             Logger.getLogger(SignInController.class.getName()).log(Level.SEVERE, null, ex);
         }

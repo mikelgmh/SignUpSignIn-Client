@@ -22,9 +22,8 @@ public class ValidationUtils {
     }
 
     //public void inputValidationColors(TextField tf, String labelText, String textFieldCssClass, boolean addTextFieldClass, Label label) {
-     //   addClass(tf, textFieldCssClass, addTextFieldClass);
-   // }
-
+    //   addClass(tf, textFieldCssClass, addTextFieldClass);
+    // }
     public void addClass(TextField tf, String cssClass, Boolean addClass) {
         ObservableList<String> styleClass = tf.getStyleClass();
         if (addClass) {
@@ -33,8 +32,7 @@ public class ValidationUtils {
             styleClass.removeAll(Collections.singleton(cssClass));
         }
     }
-    
-    
+
     public void regexValidator(Pattern regexp, TextField tf, String value, String property) {
         if (regexp.matcher(value).matches()) {
             tf.getProperties().put(property, true);
@@ -58,11 +56,13 @@ public class ValidationUtils {
         }
     }
 
-    public void comparePasswords(final PasswordField pf1, final PasswordField pf2, String property) {
+    public boolean comparePasswords(final PasswordField pf1, final PasswordField pf2, String property) {
         if (pf1.getText().equals(pf2.getText()) && pf1.getText().trim().isEmpty() == false) {
             pf2.getProperties().put(property, true);
+            return true;
         } else {
             pf2.getProperties().put(property, false);
+            return false;
         }
     }
 }

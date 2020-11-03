@@ -57,8 +57,8 @@ public class DashboardController {
         stage.setScene(scene);
         stage.setTitle("Dashboard");
         stage.setResizable(false);
-        lbl_Connection.setText(getFormatterDate());
-        lbl_Welcome.setText(user.getFullName());
+        lbl_Connection.setText("Last connection: " + getFormatterDate());
+        lbl_Welcome.setText("Hello " + user.getFullName());
         btn_Logout.setTooltip(new Tooltip("Return to Sign In"));
         stage.show();
     }
