@@ -5,6 +5,7 @@
  */
 package signupsignin.controllers;
 
+import interfaces.Signable;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -26,22 +27,27 @@ import user.User;
  * @author Imanol
  */
 public class DashboardController {
-
+    
     private Stage stage;
     private User user;
-
+    private Signable signableImplementation;
+    
     @FXML
     private Button btn_Logout;
-
+    
     @FXML
     private Label lbl_Connection;
-
+    
     @FXML
     private Label lbl_Welcome;
-
+    
     public DashboardController() {
     }
-
+    
+    public void setSignableImplementation(Signable signableImplementation) {
+        this.signableImplementation = signableImplementation;
+    }
+    
     public void initStage(Parent root) {
         Scene scene = new Scene(root);
         stage = new Stage();
@@ -53,22 +59,23 @@ public class DashboardController {
         btn_Logout.setTooltip(new Tooltip("Return to Sign In"));
         stage.show();
     }
-
+    
     @FXML
-    private void handleOnClickSignIn(ActionEvent event) throws IOException {
+    private void handleOnClickLogout(ActionEvent event) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/signupsignin/view/SignIn.fxml"));
         Parent root = (Parent) loader.load();
         SignInController controller = ((SignInController) loader.getController());
-        // FIXME: Al volver a la pantalla de Sign In, que siga funcionando las excepciones del botón de Login.
+        
+        controller.setSignable(this.signableImplementation);
         controller.setStage(new Stage());
         controller.initStage(root);
         stage.close();
     }
-
+    
     public void setUser(User user) {
         this.user = user;
     }
-
+    
     private String getFormatterDate() {
         String pattern = "dd-M-yyyy HH:mm:ss";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern, new Locale("fr", "FR"));

@@ -4,10 +4,10 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.Pane?>
 
-<Pane fx:id="paneDashboard" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="288.0" prefWidth="441.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="signupsignin.controllers.DashboardController">
+<Pane fx:id="paneDashboard" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="288.0" prefWidth="441.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="signupsignin.controllers.DashboardController">
    <children>
       <Label fx:id="lbl_Welcome" layoutX="152.0" layoutY="99.0" text="Welcome back, User." />
-      <Button fx:id="btn_Logout" layoutX="330.0" layoutY="221.0" mnemonicParsing="false" onAction="#handleOnClickSignIn" text="Logout" />
+      <Button fx:id="btn_Logout" layoutX="330.0" layoutY="221.0" mnemonicParsing="false" onAction="#handleOnClickLogout" text="Logout" />
       <Label fx:id="lbl_Connection" layoutX="25.0" layoutY="226.0" text="Last Connection: 0:00:00 1/1/2020" />
    </children>
 </Pane>
