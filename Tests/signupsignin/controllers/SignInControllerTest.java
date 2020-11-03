@@ -38,63 +38,63 @@ public class SignInControllerTest extends ApplicationTest {
 
     @Test
     public void testA_InitialStageIsCorrect() {
-        verifyThat("#txtUser", isFocused());
-        verifyThat("#txtUser", hasText(""));
-        verifyThat("#txtPassword", hasText(""));
-        verifyThat("#btnSignUp", isEnabled());
-        verifyThat("#btnSignIn", isDisabled());
+        verifyThat("#txt_User", isFocused());
+        verifyThat("#txt_User", hasText(""));
+        verifyThat("#txt_Password", hasText(""));
+        verifyThat("#btn_SignUp", isEnabled());
+        verifyThat("#btn_SignIn", isDisabled());
     }
 
     @Test
     public void testB_UserNotFoundAlert() {
-        clickOn("#txtUser");
+        clickOn("#txt_User");
         write("asojkdn");
-        clickOn("#txtPassword");
+        clickOn("#txt_Password");
         write("asujidn%");
-        clickOn("#btnSignIn");
+        clickOn("#btn_SignIn");
         clickOn("OK");
         verifyThat("#paneDashboard", isNull());
     }
 
     @Test
     public void testC_IncorrectPasswordAlert() {
-        clickOn("#txtUser");
+        clickOn("#txt_User");
         write("Imanol");
-        clickOn("#txtPassword");
+        clickOn("#txt_Password");
         write("asujidn%");
-        clickOn("#btnSignIn");
+        clickOn("#btn_SignIn");
         clickOn("OK");
         verifyThat("#paneDashboard", isNull());
     }
 
     @Test
     public void testD_SignInButtonChecker() {
-        clickOn("#txtUser");
+        clickOn("#txt_User");
         write("Imanol");
-        verifyThat("#btnSignIn", isDisabled());
-        clickOn("#txtPassword");
+        verifyThat("#btn_SignIn", isDisabled());
+        clickOn("#txt_Password");
         write("asujidn%");
-        verifyThat("#btnSignIn", isEnabled());
+        verifyThat("#btn_SignIn", isEnabled());
         eraseText(8);
-        verifyThat("#btnSignIn", isDisabled());
-        clickOn("#txtUser");
+        verifyThat("#btn_SignIn", isDisabled());
+        clickOn("#txt_User");
         eraseText(6);
-        verifyThat("#btnSignIn", isDisabled());
+        verifyThat("#btn_SignIn", isDisabled());
     }
 
     @Test
     public void testE_SignUpStageIsVisible() {
-        clickOn("#btnSignUp");
+        clickOn("#btn_SignUp");
         verifyThat("#signUpPane", isVisible());
     }
 
     @Test
     public void testF_DashboardStageIsVisible() {
-        clickOn("#txtUser");
+        clickOn("#txt_User");
         write("Imanol");
-        clickOn("#txtPassword");
+        clickOn("#txt_Password");
         write("Qwer1234%");
-        clickOn("#btnSignIn");
+        clickOn("#btn_SignIn");
         verifyThat("#paneDashboard", isVisible());
     }
 }
