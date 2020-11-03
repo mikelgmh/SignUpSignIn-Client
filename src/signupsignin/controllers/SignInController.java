@@ -48,13 +48,13 @@ public class SignInController {
     private Signable signableImplementation;
 
     @FXML
-    private Button btnSignIn;
+    private Button btn_SignIn;
     @FXML
-    private Button btnSignUp;
+    private Button btn_SignUp;
     @FXML
-    private TextField txtUser;
+    private TextField txt_User;
     @FXML
-    private PasswordField txtPassword;
+    private PasswordField txt_Password;
 
     public void setStage(Stage stage) {
         this.stage = stage;
@@ -80,29 +80,29 @@ public class SignInController {
     }
 
     private void handleWindowShowing(WindowEvent event) {
-        btnSignIn.setDisable(true);
-        txtUser.setPromptText("Insert username");
-        txtPassword.setPromptText("Insert password");
-        btnSignIn.setTooltip(new Tooltip("Send identification values"));
-        btnSignUp.setTooltip(new Tooltip("Create a new account"));
+        btn_SignIn.setDisable(true);
+        txt_User.setPromptText("Username");
+        txt_Password.setPromptText("Password");
+        btn_SignIn.setTooltip(new Tooltip("Send identification values"));
+        btn_SignUp.setTooltip(new Tooltip("Create a new account"));
 
     }
 
     public void setListeners() {
-        this.txtUser.textProperty().addListener((obs, oldText, newText) -> {
-            this.validationUtils.minLength(this.txtUser, 3, newText, "minLengthValidator");
-            this.validationUtils.textLimiter(this.txtUser, 20, newText);
+        this.txt_User.textProperty().addListener((obs, oldText, newText) -> {
+            this.validationUtils.minLength(this.txt_User, 3, newText, "minLengthValidator");
+            this.validationUtils.textLimiter(this.txt_User, 20, newText);
             this.validate();
         });
 
     }
 
     public void validate() {
-        if (Boolean.parseBoolean(this.txtUser.getProperties().get("minLengthValidator").toString())
-                && !txtPassword.toString().trim().equalsIgnoreCase("")) {
-            this.btnSignIn.setDisable(false);
+        if (Boolean.parseBoolean(this.txt_User.getProperties().get("minLengthValidator").toString())
+                && !txt_Password.toString().trim().equalsIgnoreCase("")) {
+            this.btn_SignIn.setDisable(false);
         } else {
-            this.btnSignIn.setDisable(true);
+            this.btn_SignIn.setDisable(true);
         }
     }
 
@@ -121,8 +121,8 @@ public class SignInController {
         logger.log(Level.INFO, "Signing in.");
         // Guardamos la información de user y password dentro de la clase User
         User user = new User();
-        user.setLogin(txtUser.getText());
-        user.setPassword(txtPassword.getText());
+        user.setLogin(txt_User.getText());
+        user.setPassword(txt_Password.getText());
 
         try {
             // Enviamos los datos al SignableImplementation para hacer la comprobación con la BD.
