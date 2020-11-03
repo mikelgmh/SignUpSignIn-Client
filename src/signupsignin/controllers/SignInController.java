@@ -40,12 +40,12 @@ import javafx.stage.WindowEvent;
  * @author Iker, Aketza
  */
 public class SignInController {
-    
+
     private static final Logger logger = Logger.getLogger("signupsignin.controllers.SignInController");
-    
+
     private Stage stage;
     private Signable signableImplementation;
-    
+
     @FXML
     private Button btnSignIn;
     @FXML
@@ -54,18 +54,18 @@ public class SignInController {
     private TextField txtUser;
     @FXML
     private PasswordField txtPassword;
-    
+
     public void setStage(Stage stage) {
         this.stage = stage;
     }
-    
+
     public SignInController() {
     }
-    
+
     public void setSignable(Signable signable) {
         this.signableImplementation = signable;
     }
-    
+
     public void initStage(Parent root) {
         logger.log(Level.INFO, "Loading the SignIn stage.");
         Scene scene = new Scene(root);
@@ -78,7 +78,7 @@ public class SignInController {
         stage.show();
         logger.log(Level.INFO, "SignIn stage loaded.");
     }
-    
+
     private void handleWindowShowing(WindowEvent event) {
         btnSignIn.setDisable(true);
         txtUser.setPromptText("Insert username");
@@ -86,7 +86,7 @@ public class SignInController {
         btnSignIn.setTooltip(new Tooltip("Send identification values"));
         btnSignUp.setTooltip(new Tooltip("Create a new account"));
     }
-    
+
     private void textChanged(ObservableValue observable, String oldValue, String newValue) {
         if (this.txtUser.getText().trim().equals("") || this.txtPassword.getText().trim().equals("")) {
             btnSignIn.setDisable(true);
@@ -94,7 +94,7 @@ public class SignInController {
             btnSignIn.setDisable(false);
         }
     }
-    
+
     @FXML
     private void handleOnClickRegister(ActionEvent event) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/signupsignin/view/SignUp.fxml"));
@@ -104,7 +104,7 @@ public class SignInController {
         controller.setSignable(this.signableImplementation);
         controller.initStage(root);
     }
-    
+
     @FXML
     private void handleOnClickLogin(ActionEvent event) throws IOException {
         logger.log(Level.INFO, "Signing in.");
@@ -112,7 +112,7 @@ public class SignInController {
         User user = new User();
         user.setLogin(txtUser.getText());
         user.setPassword(txtPassword.getText());
-        
+
         try {
             // Enviamos los datos al SignableImplementation para hacer la comprobación con la BD.
             user = this.signableImplementation.signIn(user);
@@ -157,6 +157,10 @@ public class SignInController {
             alertConnectingToDatabase.showAndWait();
         } catch (ErrorConnectingServerException ex) {
             Logger.getLogger(SignInController.class.getName()).log(Level.SEVERE, null, ex);
+            Alert alertCouldntReachServer = new Alert(Alert.AlertType.ERROR);
+            alertCouldntReachServer.setTitle("Connection error.");
+            alertCouldntReachServer.setContentText("The server couldn't be reached.");
+            alertCouldntReachServer.showAndWait();
         }
     }
 }
