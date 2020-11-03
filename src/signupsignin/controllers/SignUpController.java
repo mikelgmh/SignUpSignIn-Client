@@ -48,13 +48,11 @@ public class SignUpController {
     private static final String MIN_THREE_CHARACTERS = "Min 3 characters";
     private static final String ENTER_VALID_EMAIL = "Type a valid email.";
     private static final String PASSWORD_CONDITIONS = "- Between 8 and 25 characters\n- Uppercase and Lowercase letters\n- One number and special character at least";
-    private final Pattern emailRegexp = Pattern.compile(
-            "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])");
+    private final Pattern emailRegexp = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
     private final Pattern passRegexp = Pattern
             .compile("^(?=.*[0-9])" + "(?=.*[a-z])(?=.*[A-Z])" + "(?=.*[@#$%^&+=])" + "(?=\\S+$).{8,25}$");
     private Stage stage;
     private static final Color greyColor = Color.web("#686464");
-
     private Signable signableImplementation;
 
     @FXML
@@ -140,79 +138,49 @@ public class SignUpController {
 
     public void setListeners() {
         this.txt_Firstname.textProperty().addListener((obs, oldText, newText) -> {
-            minLength(this.txt_Firstname, 3, newText, "minLengthValidator");
-            textLimiter(this.txt_Firstname, 20, newText);
+            this.validationUtils.minLength(this.txt_Firstname, 3, newText, "minLengthValidator");
+            this.validationUtils.textLimiter(this.txt_Firstname, 20, newText);
             this.validate();
         });
 
         this.txt_Lastname.textProperty().addListener((obs, oldText, newText) -> {
-            minLength(this.txt_Lastname, 3, newText, "minLengthValidator");
-            textLimiter(this.txt_Lastname, 20, newText);
+            this.validationUtils.minLength(this.txt_Lastname, 3, newText, "minLengthValidator");
+            this.validationUtils.textLimiter(this.txt_Lastname, 20, newText);
 
             this.validate();
         });
 
         this.txt_Email.textProperty().addListener((obs, oldText, newText) -> {
-            minLength(this.txt_Email, 3, newText, "minLengthValidator");
-            textLimiter(this.txt_Email, 80, newText);
-            regexValidator(this.emailRegexp, this.txt_Email, newText.toLowerCase(), "emailValidator");
+            this.validationUtils.minLength(this.txt_Email, 3, newText, "minLengthValidator");
+            this.validationUtils.textLimiter(this.txt_Email, 80, newText);
+            this.validationUtils.regexValidator(this.emailRegexp, this.txt_Email, newText.toLowerCase(), "emailValidator");
             this.hint_Email.setTextFill(greyColor);
+            hint_Email.setText(ENTER_VALID_EMAIL);
             this.validationUtils.addClass(this.txt_Email, "error", Boolean.FALSE);
             this.validate();
         });
 
         this.txt_Username.textProperty().addListener((obs, oldText, newText) -> {
-            minLength(this.txt_Username, 3, newText, "minLengthValidator");
-            textLimiter(this.txt_Username, 20, newText);
+            this.validationUtils.minLength(this.txt_Username, 3, newText, "minLengthValidator");
+            this.validationUtils.textLimiter(this.txt_Username, 20, newText);
             this.hint_Username.setTextFill(greyColor);
             this.validationUtils.addClass(this.txt_Username, "error", Boolean.FALSE);
+            hint_Username.setText(MIN_THREE_CHARACTERS);
             this.validate();
         });
         this.txt_Password.textProperty().addListener((obs, oldText, newText) -> {
-            comparePasswords(this.txt_Password, this.txt_RepeatPassword, "passwordsMatch");
-            textLimiter(this.txt_Password, 25, newText);
-            regexValidator(this.passRegexp, this.txt_Password, newText, "passwordRequirements");
+            this.validationUtils.comparePasswords(this.txt_Password, this.txt_RepeatPassword, "passwordsMatch");
+            this.validationUtils.textLimiter(this.txt_Password, 25, newText);
+            this.validationUtils.regexValidator(this.passRegexp, this.txt_Password, newText, "passwordRequirements");
             this.validate();
         });
         this.txt_RepeatPassword.textProperty().addListener((obs, oldText, newText) -> {
-            comparePasswords(this.txt_Password, this.txt_RepeatPassword, "passwordsMatch");
-            textLimiter(this.txt_RepeatPassword, 25, newText);
-            regexValidator(this.passRegexp, this.txt_RepeatPassword, newText, "passwordRequirements");
+            this.validationUtils.comparePasswords(this.txt_Password, this.txt_RepeatPassword, "passwordsMatch");
+            this.validationUtils.textLimiter(this.txt_RepeatPassword, 25, newText);
+            this.validationUtils.regexValidator(this.passRegexp, this.txt_RepeatPassword, newText, "passwordRequirements");
             this.validate();
         });
 
-    }
-
-    public void regexValidator(Pattern regexp, TextField tf, String value, String property) {
-        if (regexp.matcher(value).matches()) {
-            tf.getProperties().put(property, true);
-        } else {
-            tf.getProperties().put(property, false);
-        }
-    }
-
-    public void minLength(TextField tf, final int minLength, String currentValue, String property) {
-        if (currentValue.length() < minLength) {
-            tf.getProperties().put(property, false);
-        } else {
-            tf.getProperties().put(property, true);
-        }
-    }
-
-    public void textLimiter(TextField tf, final int maxLength, String currentValue) {
-        if (currentValue.length() > maxLength) {
-            String s = currentValue.substring(0, maxLength);
-            tf.setText(s);
-        }
-    }
-
-    public void comparePasswords(final PasswordField pf1, final PasswordField pf2, String property) {
-        if (pf1.getText().equals(pf2.getText()) && pf1.getText().trim().isEmpty() == false) {
-            pf2.getProperties().put(property, true);
-        } else {
-            pf2.getProperties().put(property, false);
-        }
-        this.validate();
     }
 
     public void validate() {
