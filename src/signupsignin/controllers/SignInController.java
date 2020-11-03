@@ -34,6 +34,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import signupsignin.util.ValidationUtils;
 
 /**
  *
@@ -42,7 +43,7 @@ import javafx.stage.WindowEvent;
 public class SignInController {
 
     private static final Logger logger = Logger.getLogger("signupsignin.controllers.SignInController");
-
+    private ValidationUtils validationUtils = new ValidationUtils();
     private Stage stage;
     private Signable signableImplementation;
 
@@ -69,12 +70,11 @@ public class SignInController {
     public void initStage(Parent root) {
         logger.log(Level.INFO, "Loading the SignIn stage.");
         Scene scene = new Scene(root);
+        this.setListeners();
         stage.setScene(scene);
         stage.setTitle("Login");
         stage.setResizable(false);
         stage.setOnShowing(this::handleWindowShowing);
-        txtUser.textProperty().addListener(this::textChanged);
-        txtPassword.textProperty().addListener(this::textChanged);
         stage.show();
         logger.log(Level.INFO, "SignIn stage loaded.");
     }
@@ -85,13 +85,24 @@ public class SignInController {
         txtPassword.setPromptText("Insert password");
         btnSignIn.setTooltip(new Tooltip("Send identification values"));
         btnSignUp.setTooltip(new Tooltip("Create a new account"));
+
     }
 
-    private void textChanged(ObservableValue observable, String oldValue, String newValue) {
-        if (this.txtUser.getText().trim().equals("") || this.txtPassword.getText().trim().equals("")) {
-            btnSignIn.setDisable(true);
+    public void setListeners() {
+        this.txtUser.textProperty().addListener((obs, oldText, newText) -> {
+            this.validationUtils.minLength(this.txtUser, 3, newText, "minLengthValidator");
+            this.validationUtils.textLimiter(this.txtUser, 20, newText);
+            this.validate();
+        });
+
+    }
+
+    public void validate() {
+        if (Boolean.parseBoolean(this.txtUser.getProperties().get("minLengthValidator").toString())
+                && !txtPassword.toString().trim().equalsIgnoreCase("")) {
+            this.btnSignIn.setDisable(false);
         } else {
-            btnSignIn.setDisable(false);
+            this.btnSignIn.setDisable(true);
         }
     }
 

@@ -49,8 +49,7 @@ public class SignUpController {
     private static final String ENTER_VALID_EMAIL = "Type a valid email.";
     private static final String PASSWORD_CONDITIONS = "- Between 8 and 25 characters\n- Uppercase and Lowercase letters\n- One number and special character at least";
     private final Pattern emailRegexp = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
-    private final Pattern passRegexp = Pattern
-            .compile("^(?=.*[0-9])" + "(?=.*[a-z])(?=.*[A-Z])" + "(?=.*[@#$%^&+=])" + "(?=\\S+$).{8,25}$");
+    private final Pattern passRegexp = Pattern.compile("^(?=.*[0-9])" + "(?=.*[a-z])(?=.*[A-Z])" + "(?=.*[@#$%^&+=])" + "(?=\\S+$).{8,25}$");
     private Stage stage;
     private static final Color greyColor = Color.web("#686464");
     private Signable signableImplementation;
