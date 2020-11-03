@@ -32,6 +32,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.stage.Stage;
 import signupsignin.util.ValidationUtils;
 import user.User;
@@ -115,6 +116,7 @@ public class SignUpController {
         hint_Email.setText(ENTER_VALID_EMAIL);
         hint_Username.setText(MIN_THREE_CHARACTERS);
         hint_Password.setText(PASSWORD_CONDITIONS);
+        btn_SignUp.setTooltip(new Tooltip("Click to sign up"));
         hint_RepeatPassword.setText("");
         txt_Email.getProperties().put("emailValidator", false);
         txt_Firstname.getProperties().put("minLengthValidator", false);

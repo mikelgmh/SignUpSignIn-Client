@@ -15,7 +15,7 @@
             <Insets left="60.0" right="60.0" top="45.0" />
          </VBox.margin>
       </Label>
-      <TextField fx:id="txtUser">
+      <TextField fx:id="txt_User">
          <VBox.margin>
             <Insets bottom="20.0" left="60.0" right="60.0" top="10.0" />
          </VBox.margin>
@@ -25,15 +25,15 @@
             <Insets left="60.0" right="60.0" />
          </VBox.margin>
       </Label>
-      <PasswordField fx:id="txtPassword">
+      <PasswordField fx:id="txt_Password">
          <VBox.margin>
             <Insets left="60.0" right="60.0" top="10.0" />
          </VBox.margin>
       </PasswordField>
       <HBox fx:id="hBoxPane" alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0">
          <children>
-            <Button fx:id="btnSignUp" mnemonicParsing="false" onAction="#handleOnClickRegister" prefHeight="31.0" prefWidth="76.0" text="Sign Up" />
-            <Button fx:id="btnSignIn" mnemonicParsing="false" onAction="#handleOnClickLogin" prefHeight="31.0" prefWidth="76.0" text="Sign In">
+            <Button fx:id="btn_SignUp" mnemonicParsing="false" onAction="#handleOnClickRegister" prefHeight="31.0" prefWidth="76.0" text="Sign Up" />
+            <Button fx:id="btn_SignIn" mnemonicParsing="false" onAction="#handleOnClickLogin" prefHeight="31.0" prefWidth="76.0" text="Sign In">
                <HBox.margin>
                   <Insets left="10.0" right="35.0" />
                </HBox.margin>
