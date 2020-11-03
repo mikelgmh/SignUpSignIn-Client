@@ -107,11 +107,12 @@ public class SignInController {
         controller.setStage(stage);
         controller.setSignable(this.signableImplementation);
         controller.initStage(root);
+        stage.close();
     }
 
     @FXML
     private void handleOnClickLogin(ActionEvent event) throws IOException {
-        logger.log(Level.INFO, "Signing in.");
+        logger.log(Level.INFO, "Attempting to sign in.");
         // Guardamos la información de user y password dentro de la clase User
         User user = new User();
         user.setLogin(txt_User.getText());
