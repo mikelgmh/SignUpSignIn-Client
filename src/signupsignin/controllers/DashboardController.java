@@ -5,17 +5,21 @@
  */
 package signupsignin.controllers;
 
+import interfaces.Signable;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Optional;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.stage.Stage;
@@ -29,6 +33,7 @@ public class DashboardController {
 
     private Stage stage;
     private User user;
+    private Signable signableImplementation;
 
     @FXML
     private Button btn_Logout;
@@ -40,6 +45,10 @@ public class DashboardController {
     private Label lbl_Welcome;
 
     public DashboardController() {
+    }
+
+    public void setSignableImplementation(Signable signableImplementation) {
+        this.signableImplementation = signableImplementation;
     }
 
     public void initStage(Parent root) {
@@ -55,14 +64,23 @@ public class DashboardController {
     }
 
     @FXML
-    private void handleOnClickSignIn(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/signupsignin/view/SignIn.fxml"));
-        Parent root = (Parent) loader.load();
-        SignInController controller = ((SignInController) loader.getController());
-        // FIXME: Al volver a la pantalla de Sign In, que siga funcionando las excepciones del botón de Login.
-        controller.setStage(new Stage());
-        controller.initStage(root);
-        stage.close();
+    private void handleOnClickLogout(ActionEvent event) throws IOException {
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Sign Out");
+        String s = "Are you sure you want to logout?";
+        alert.setContentText(s);
+        Optional<ButtonType> result = alert.showAndWait();
+        if ((result.isPresent()) && (result.get() == ButtonType.OK)) {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/signupsignin/view/SignIn.fxml"));
+            Parent root = (Parent) loader.load();
+            SignInController controller = ((SignInController) loader.getController());
+
+            controller.setSignable(this.signableImplementation);
+            controller.setStage(new Stage());
+            controller.initStage(root);
+            stage.close();
+        }
     }
 
     public void setUser(User user) {
