@@ -26,7 +26,7 @@ import user.User;
  *
  * @author Mikel
  */
-public class SignableImplementation implements Signable {
+public class SignableImplementation extends Thread implements Signable {
     
     private Socket clientSocket;
     private ObjectOutputStream oos;
@@ -34,6 +34,11 @@ public class SignableImplementation implements Signable {
     private ResourceBundle rb = ResourceBundle.getBundle("config.config");
     
     public SignableImplementation() {
+        
+    }
+    
+    @Override
+    public void run(){
         
     }
     

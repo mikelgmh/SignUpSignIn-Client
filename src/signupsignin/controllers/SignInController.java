@@ -114,6 +114,7 @@ public class SignInController {
         controller.setStage(stage);
         controller.setSignable(this.signableImplementation);
         controller.initStage(root);
+        stage.close();
     }
 
     @FXML

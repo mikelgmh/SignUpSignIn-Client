@@ -127,8 +127,9 @@ public class SignUpController {
         txt_RepeatPassword.getProperties().put("passwordsMatch", false);
 
         Scene scene = new Scene(parent);
-
+        Stage stage = new Stage();
         this.setListeners();
+        this.setStage(stage);
         stage.setScene(scene);
         scene.getStylesheets().add(getClass().getResource("/signupsignin/view/errorStyle.css").toExternalForm());
 
@@ -255,6 +256,7 @@ public class SignUpController {
         Parent root = null;
         try {
             root = (Parent) loader.load();
+            stage.close();
         } catch (IOException ex) {
             Logger.getLogger(SignInController.class.getName()).log(Level.SEVERE, null, ex);
         }
