@@ -32,6 +32,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
@@ -83,6 +85,7 @@ public class SignInController {
         btnSignIn.setDisable(true);
         txtUser.setPromptText("Insert username");
         txtPassword.setPromptText("Insert password");
+        btnSignIn.setDefaultButton(true);
         btnSignIn.setTooltip(new Tooltip("Send identification values"));
         btnSignUp.setTooltip(new Tooltip("Create a new account"));
     }
@@ -127,35 +130,45 @@ public class SignInController {
         } catch (ErrorConnectingDatabaseException ex) {
             logger.log(Level.WARNING, "Error connecting to the database.");
             Alert alertConnectingToDatabase = new Alert(Alert.AlertType.ERROR);
-            alertConnectingToDatabase.setTitle("Error with the server");
-            alertConnectingToDatabase.setContentText("Error connecting to the server. Contact the Administrator.");
+            alertConnectingToDatabase.setTitle("Error with the server.");
+            alertConnectingToDatabase.setHeaderText("Error connecting to the database.");
+            alertConnectingToDatabase.setContentText("An error ocurred trying to connect to the database. Contact the Administrator.");
             alertConnectingToDatabase.showAndWait();
         } catch (UserNotFoundException ex) {
             logger.log(Level.WARNING, "User not found.");
             Alert alertUserNotFound = new Alert(Alert.AlertType.WARNING);
-            alertUserNotFound.setTitle("User not found");
-            alertUserNotFound.setContentText("The user entered does not exist.");
+            alertUserNotFound.setTitle("User not found.");
+            alertUserNotFound.setHeaderText("User not found.");
+            alertUserNotFound.setContentText("The user entered does not exist in the database.");
             alertUserNotFound.showAndWait();
         } catch (PasswordMissmatchException ex) {
-            logger.log(Level.WARNING, "The password inserted does not match.");
+            logger.log(Level.WARNING, "The password inserted does not match with the current user.");
             Alert alertPasswordNoMatch = new Alert(Alert.AlertType.WARNING);
             alertPasswordNoMatch.setTitle("The password does not match.");
-            alertPasswordNoMatch.setContentText("The password is incorrect.");
+            alertPasswordNoMatch.setHeaderText("Incorrect password.");
+            alertPasswordNoMatch.setContentText("The password inserted does not match with the current user. Enter a valid password.");
             alertPasswordNoMatch.showAndWait();
         } catch (ErrorClosingDatabaseResources ex) {
             logger.log(Level.WARNING, "Error closing the database resources.");
             Alert alertClosingDatabase = new Alert(Alert.AlertType.ERROR);
-            alertClosingDatabase.setTitle("Unexpected error");
-            alertClosingDatabase.setContentText("Unexpected error ocurred. Contact the Administrator.");
+            alertClosingDatabase.setTitle("Unexpected error.");
+            alertClosingDatabase.setHeaderText("Unexpected error ocurred.");
+            alertClosingDatabase.setContentText("An unexpected error ocurred with the database. Contact the server Administrator.");
             alertClosingDatabase.showAndWait();
         } catch (QueryException ex) {
-            logger.log(Level.WARNING, "Error connecting to the database.");
+            logger.log(Level.WARNING, "Error doing a query in the database.");
             Alert alertConnectingToDatabase = new Alert(Alert.AlertType.ERROR);
             alertConnectingToDatabase.setTitle("Unexpected error");
-            alertConnectingToDatabase.setContentText("Unexpected error ocurred. Contact the Administrator.");
+            alertConnectingToDatabase.setHeaderText("Unexpected error ocurred.");
+            alertConnectingToDatabase.setContentText("An unexpected error ocurred with the database. Contact the server Administrator.");
             alertConnectingToDatabase.showAndWait();
         } catch (ErrorConnectingServerException ex) {
-            Logger.getLogger(SignInController.class.getName()).log(Level.SEVERE, null, ex);
+            logger.log(Level.WARNING, "Error connecting to the server.");
+            Alert alertConnectingToDatabase = new Alert(Alert.AlertType.ERROR);
+            alertConnectingToDatabase.setTitle("Error with the server.");
+            alertConnectingToDatabase.setHeaderText("Error connecting to the server.");
+            alertConnectingToDatabase.setContentText("Can not connect to the server, try to restart the application or contact the server Administrator.");
+            alertConnectingToDatabase.showAndWait();
         }
     }
 }
