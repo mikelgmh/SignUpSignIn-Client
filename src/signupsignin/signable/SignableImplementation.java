@@ -5,6 +5,9 @@ package signupsignin.signable;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+import exceptions.ErrorConnectingDatabaseException;
+import exceptions.ErrorConnectingServerException;
+import exceptions.UserAlreadyExistException;
 import interfaces.Signable;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -14,6 +17,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import exceptions.*;
+import java.util.ResourceBundle;
 import message.Message;
 import message.TypeMessage;
 import user.User;
@@ -27,13 +31,15 @@ public class SignableImplementation implements Signable {
     private Socket clientSocket;
     private ObjectOutputStream oos;
     private ObjectInputStream ois;
-
+    private ResourceBundle rb = ResourceBundle.getBundle("config.config");
+    
     public SignableImplementation() {
 
     }
 
     @Override
-    public User signIn(User user) throws UserNotFoundException, ErrorConnectingDatabaseException, PasswordMissmatchException, ErrorClosingDatabaseResources, QueryException, ErrorConnectingServerException {
+    public User signIn(User user) throws UserNotFoundException, ErrorConnectingDatabaseException,
+            PasswordMissmatchException, ErrorClosingDatabaseResources, QueryException, ErrorConnectingServerException {
         Message message = new Message(user, TypeMessage.SIGN_IN);
         this.sendMessage(message);
         message = this.getMessage();
@@ -58,7 +64,7 @@ public class SignableImplementation implements Signable {
     }
 
     @Override
-    public User signUp(User user) throws ErrorConnectingDatabaseException, UserAlreadyExistException, QueryException, ErrorConnectingServerException {
+    public User signUp(User user) throws UserAlreadyExistException, ErrorConnectingServerException, ErrorConnectingDatabaseException, QueryException {
         Message message = new Message(user, TypeMessage.SIGN_UP);
         this.sendMessage(message);
         message = getMessage();
@@ -76,15 +82,12 @@ public class SignableImplementation implements Signable {
         return user;
 
     }
-
-    public Message sendMessage(Message msg) throws ErrorConnectingServerException {
-        Message message = null;
+    
+    public void sendMessage(Message msg) throws ErrorConnectingServerException {
         try {
-
-            clientSocket = new Socket("localhost", 3333);
+            clientSocket = new Socket(rb.getString("SOCKET_HOST"), Integer.parseInt(rb.getString("SOCKET_PORT")));
             oos = new ObjectOutputStream(clientSocket.getOutputStream());
             oos.writeObject(msg); // Send message to server
-            return message;
         } catch (IOException ex) {
             Logger.getLogger(SignableImplementation.class.getName()).log(Level.SEVERE, null, ex);
             throw new ErrorConnectingServerException();

@@ -36,6 +36,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import signupsignin.util.ValidationUtils;
 
 /**
  *
@@ -44,18 +45,18 @@ import javafx.stage.WindowEvent;
 public class SignInController {
 
     private static final Logger logger = Logger.getLogger("signupsignin.controllers.SignInController");
-
+    private ValidationUtils validationUtils = new ValidationUtils();
     private Stage stage;
     private Signable signableImplementation;
 
     @FXML
-    private Button btnSignIn;
+    private Button btn_SignIn;
     @FXML
-    private Button btnSignUp;
+    private Button btn_SignUp;
     @FXML
-    private TextField txtUser;
+    private TextField txt_User;
     @FXML
-    private PasswordField txtPassword;
+    private PasswordField txt_Password;
 
     public void setStage(Stage stage) {
         this.stage = stage;
@@ -71,30 +72,40 @@ public class SignInController {
     public void initStage(Parent root) {
         logger.log(Level.INFO, "Loading the SignIn stage.");
         Scene scene = new Scene(root);
+        this.setListeners();
         stage.setScene(scene);
         stage.setTitle("Login");
         stage.setResizable(false);
         stage.setOnShowing(this::handleWindowShowing);
-        txtUser.textProperty().addListener(this::textChanged);
-        txtPassword.textProperty().addListener(this::textChanged);
         stage.show();
         logger.log(Level.INFO, "SignIn stage loaded.");
     }
 
     private void handleWindowShowing(WindowEvent event) {
-        btnSignIn.setDisable(true);
-        txtUser.setPromptText("Insert username");
-        txtPassword.setPromptText("Insert password");
-        btnSignIn.setDefaultButton(true);
-        btnSignIn.setTooltip(new Tooltip("Send identification values"));
-        btnSignUp.setTooltip(new Tooltip("Create a new account"));
+        btn_SignIn.setDisable(true);
+        txt_User.setPromptText("Username");
+        txt_Password.setPromptText("Password");
+	btn_SignIn.setDefaultButton(true);
+        btn_SignIn.setTooltip(new Tooltip("Send identification values"));
+        btn_SignUp.setTooltip(new Tooltip("Create a new account"));
+
     }
 
-    private void textChanged(ObservableValue observable, String oldValue, String newValue) {
-        if (this.txtUser.getText().trim().equals("") || this.txtPassword.getText().trim().equals("")) {
-            btnSignIn.setDisable(true);
+    public void setListeners() {
+        this.txt_User.textProperty().addListener((obs, oldText, newText) -> {
+            this.validationUtils.minLength(this.txt_User, 3, newText, "minLengthValidator");
+            this.validationUtils.textLimiter(this.txt_User, 20, newText);
+            this.validate();
+        });
+
+    }
+
+    public void validate() {
+        if (Boolean.parseBoolean(this.txt_User.getProperties().get("minLengthValidator").toString())
+                && !txt_Password.toString().trim().equalsIgnoreCase("")) {
+            this.btn_SignIn.setDisable(false);
         } else {
-            btnSignIn.setDisable(false);
+            this.btn_SignIn.setDisable(true);
         }
     }
 
@@ -113,8 +124,8 @@ public class SignInController {
         logger.log(Level.INFO, "Signing in.");
         // Guardamos la información de user y password dentro de la clase User
         User user = new User();
-        user.setLogin(txtUser.getText());
-        user.setPassword(txtPassword.getText());
+        user.setLogin(txt_User.getText());
+        user.setPassword(txt_Password.getText());
 
         try {
             // Enviamos los datos al SignableImplementation para hacer la comprobación con la BD.
@@ -122,6 +133,7 @@ public class SignInController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/signupsignin/view/Dashboard.fxml"));
             Parent root = (Parent) loader.load();
             DashboardController controllerDashboard = ((DashboardController) loader.getController());
+            controllerDashboard.setSignableImplementation(this.signableImplementation);
             controllerDashboard.setUser(user);
             controllerDashboard.initStage(root);
             // Por último, cerramos la ventana de Login
