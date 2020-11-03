@@ -10,7 +10,7 @@ import exceptions.ErrorConnectingServerException;
 import exceptions.QueryException;
 import exceptions.UserAlreadyExistException;
 import interfaces.Signable;
-import java.awt.Color;
+import javafx.scene.paint.Color;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Optional;
@@ -53,6 +53,7 @@ public class SignUpController {
     private final Pattern passRegexp = Pattern
             .compile("^(?=.*[0-9])" + "(?=.*[a-z])(?=.*[A-Z])" + "(?=.*[@#$%^&+=])" + "(?=\\S+$).{8,25}$");
     private Stage stage;
+    private static final Color greyColor = Color.web("#686464");
 
     private Signable signableImplementation;
 
@@ -147,6 +148,7 @@ public class SignUpController {
         this.txt_Lastname.textProperty().addListener((obs, oldText, newText) -> {
             minLength(this.txt_Lastname, 3, newText, "minLengthValidator");
             textLimiter(this.txt_Lastname, 20, newText);
+
             this.validate();
         });
 
@@ -154,12 +156,16 @@ public class SignUpController {
             minLength(this.txt_Email, 3, newText, "minLengthValidator");
             textLimiter(this.txt_Email, 80, newText);
             regexValidator(this.emailRegexp, this.txt_Email, newText.toLowerCase(), "emailValidator");
+            this.hint_Email.setTextFill(greyColor);
+            this.validationUtils.addClass(this.txt_Email, "error", Boolean.FALSE);
             this.validate();
         });
 
         this.txt_Username.textProperty().addListener((obs, oldText, newText) -> {
             minLength(this.txt_Username, 3, newText, "minLengthValidator");
             textLimiter(this.txt_Username, 20, newText);
+            this.hint_Username.setTextFill(greyColor);
+            this.validationUtils.addClass(this.txt_Username, "error", Boolean.FALSE);
             this.validate();
         });
         this.txt_Password.textProperty().addListener((obs, oldText, newText) -> {
