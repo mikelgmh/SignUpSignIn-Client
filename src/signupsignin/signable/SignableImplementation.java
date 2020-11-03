@@ -26,16 +26,12 @@ import user.User;
  *
  * @author Mikel
  */
-public class SignableImplementation extends Thread implements Signable {
+public class SignableImplementation implements Signable {
 
     public SignableImplementation() {
 
     }
 
-    @Override
-    public void run() {
-
-    }
 
     @Override
     public User signIn(User user) throws UserNotFoundException, ErrorConnectingDatabaseException,
