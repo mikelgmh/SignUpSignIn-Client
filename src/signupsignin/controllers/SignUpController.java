@@ -171,18 +171,36 @@ public class SignUpController {
             this.validate();
         });
         this.txt_Password.textProperty().addListener((obs, oldText, newText) -> {
-            this.validationUtils.comparePasswords(this.txt_Password, this.txt_RepeatPassword, "passwordsMatch");
+            Boolean passwordsMatch = this.validationUtils.comparePasswords(this.txt_Password, this.txt_RepeatPassword, "passwordsMatch");
             this.validationUtils.textLimiter(this.txt_Password, 25, newText);
             this.validationUtils.regexValidator(this.passRegexp, this.txt_Password, newText, "passwordRequirements");
+            this.setPasswordFieldsError(passwordsMatch);
             this.validate();
         });
         this.txt_RepeatPassword.textProperty().addListener((obs, oldText, newText) -> {
-            this.validationUtils.comparePasswords(this.txt_Password, this.txt_RepeatPassword, "passwordsMatch");
+            Boolean passwordsMatch = this.validationUtils.comparePasswords(this.txt_Password, this.txt_RepeatPassword, "passwordsMatch");
             this.validationUtils.textLimiter(this.txt_RepeatPassword, 25, newText);
             this.validationUtils.regexValidator(this.passRegexp, this.txt_RepeatPassword, newText, "passwordRequirements");
+            this.setPasswordFieldsError(passwordsMatch);
             this.validate();
         });
 
+    }
+
+    public void setPasswordFieldsError(Boolean passwordsMatch) {
+        if (!passwordsMatch) {
+            this.hint_Password.setTextFill(Color.RED);
+            this.validationUtils.addClass(this.txt_Password, "error", Boolean.TRUE);
+            this.hint_Password.setText("Passwords don't match");
+            this.hint_RepeatPassword.setTextFill(Color.RED);
+            this.validationUtils.addClass(this.txt_RepeatPassword, "error", Boolean.TRUE);
+        } else {
+            this.hint_Password.setTextFill(greyColor);
+            this.validationUtils.addClass(this.txt_Password, "error", Boolean.FALSE);
+            this.hint_Password.setText(PASSWORD_CONDITIONS);
+            this.hint_RepeatPassword.setTextFill(greyColor);
+            this.validationUtils.addClass(this.txt_RepeatPassword, "error", Boolean.FALSE);
+        }
     }
 
     public void validate() {

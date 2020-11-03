@@ -72,7 +72,7 @@ public class SignableImplementation extends Thread implements Signable {
     public User signUp(User user) throws UserAlreadyExistException, ErrorConnectingServerException, ErrorConnectingDatabaseException, QueryException {
         Message message = new Message(user, TypeMessage.SIGN_UP);
         this.sendMessage(message);
-        message = getMessage();
+        message = this.getMessage();
         this.stopConnection();
         switch (message.getType()) {
             case CONNECTION_ERROR:
