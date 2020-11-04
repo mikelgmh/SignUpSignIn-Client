@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package signupsignin.controllers;
 
 // Library
@@ -127,42 +122,42 @@ public class SignInController {
             stage.close();
             logger.log(Level.INFO, "Signed In successfully");
         } catch (ErrorConnectingDatabaseException ex) {
-            logger.log(Level.WARNING, "Error connecting to the database.");
+            logger.log(Level.SEVERE, "Error connecting to the database.");
             Alert alertConnectingToDatabase = new Alert(Alert.AlertType.ERROR);
             alertConnectingToDatabase.setTitle("Error with the server.");
             alertConnectingToDatabase.setHeaderText("Error connecting to the database.");
             alertConnectingToDatabase.setContentText("An error ocurred trying to connect to the database. Contact the Administrator.");
             alertConnectingToDatabase.showAndWait();
         } catch (UserNotFoundException ex) {
-            logger.log(Level.WARNING, "User not found.");
+            logger.log(Level.SEVERE, "User not found.");
             Alert alertUserNotFound = new Alert(Alert.AlertType.WARNING);
             alertUserNotFound.setTitle("User not found.");
             alertUserNotFound.setHeaderText("User not found.");
             alertUserNotFound.setContentText("The user entered does not exist in the database.");
             alertUserNotFound.showAndWait();
         } catch (PasswordMissmatchException ex) {
-            logger.log(Level.WARNING, "The password inserted does not match with the current user.");
+            logger.log(Level.SEVERE, "The password inserted does not match with the current user.");
             Alert alertPasswordNoMatch = new Alert(Alert.AlertType.WARNING);
             alertPasswordNoMatch.setTitle("The password does not match.");
             alertPasswordNoMatch.setHeaderText("Incorrect password.");
             alertPasswordNoMatch.setContentText("The password inserted does not match with the current user. Enter a valid password.");
             alertPasswordNoMatch.showAndWait();
         } catch (ErrorClosingDatabaseResources ex) {
-            logger.log(Level.WARNING, "Error closing the database resources.");
+            logger.log(Level.SEVERE, "Error closing the database resources.");
             Alert alertClosingDatabase = new Alert(Alert.AlertType.ERROR);
             alertClosingDatabase.setTitle("Unexpected error.");
             alertClosingDatabase.setHeaderText("Unexpected error ocurred.");
             alertClosingDatabase.setContentText("An unexpected error ocurred with the database. Contact the server Administrator.");
             alertClosingDatabase.showAndWait();
         } catch (QueryException ex) {
-            logger.log(Level.WARNING, "Error doing a query in the database.");
+            logger.log(Level.SEVERE, "Error doing a query in the database.");
             Alert alertConnectingToDatabase = new Alert(Alert.AlertType.ERROR);
             alertConnectingToDatabase.setTitle("Unexpected error");
             alertConnectingToDatabase.setHeaderText("Unexpected error ocurred.");
             alertConnectingToDatabase.setContentText("An unexpected error ocurred with the database. Contact the server Administrator.");
             alertConnectingToDatabase.showAndWait();
         } catch (ErrorConnectingServerException ex) {
-            logger.log(Level.WARNING, "Error connecting to the server.");
+            logger.log(Level.SEVERE, "Error connecting to the server.");
             Alert alertConnectingToDatabase = new Alert(Alert.AlertType.ERROR);
             alertConnectingToDatabase.setTitle("Error with the server.");
             alertConnectingToDatabase.setHeaderText("Error connecting to the server.");
