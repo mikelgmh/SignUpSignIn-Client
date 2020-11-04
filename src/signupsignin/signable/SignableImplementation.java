@@ -22,7 +22,7 @@ import user.User;
  * send a Message object to the server using a thread defined in the class
  * below.
  *
- * @author: Mikel
+ * @author: Mikel, Iker
  */
 public class SignableImplementation implements Signable {
 
@@ -63,13 +63,15 @@ public class SignableImplementation implements Signable {
             case USER_DOES_NOT_EXIST:
                 throw new UserNotFoundException();
             case CONNECTION_ERROR:
-                throw new ErrorConnectingDatabaseException();
+                throw new ErrorConnectingServerException();
             case LOGIN_ERROR:
                 throw new PasswordMissmatchException();
             case DATABASE_ERROR:
-                throw new ErrorClosingDatabaseResources();
+                throw new ErrorConnectingDatabaseException();
             case QUERY_ERROR:
                 throw new QueryException();
+            case STOP_SERVER:
+                throw new ErrorClosingDatabaseResources();
             default:
                 break;
         }
@@ -108,7 +110,7 @@ public class SignableImplementation implements Signable {
             case QUERY_ERROR:
                 throw new QueryException();
         }
-        return user;
+        return message.getUser();
     }
 
 }
@@ -146,6 +148,7 @@ class ServerConnector extends Thread {
             this.stopConnection();
         } catch (ErrorConnectingServerException ex) {
             Logger.getLogger(ServerConnector.class.getName()).log(Level.SEVERE, null, ex);
+            this.message.setType(TypeMessage.CONNECTION_ERROR); // Cambiamos el tipo de mensaje para que salte por la excepción ErrorConnectingServerException.
         }
     }
 

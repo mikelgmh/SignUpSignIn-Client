@@ -32,11 +32,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import signupsignin.util.ValidationUtils;
 
 /**
  *
@@ -45,7 +42,6 @@ import signupsignin.util.ValidationUtils;
 public class SignInController {
 
     private static final Logger logger = Logger.getLogger("signupsignin.controllers.SignInController");
-    private ValidationUtils validationUtils = new ValidationUtils();
     private Stage stage;
     private Signable signableImplementation;
 
