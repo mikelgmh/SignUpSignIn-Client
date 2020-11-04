@@ -26,15 +26,19 @@ import javafx.stage.Stage;
 import user.User;
 
 /**
+ * This class handles the interaction of the user with the graphic user
+ * interface, on window dashboard.
  *
  * @author Imanol
  */
 public class DashboardController {
 
+    //Se crea el stage y un usuario.
     private Stage stage;
     private User user;
     private Signable signableImplementation;
 
+    //Se declaran los elementos de FXML de la ventana.
     @FXML
     private Button btn_Logout;
 
@@ -51,18 +55,38 @@ public class DashboardController {
         this.signableImplementation = signableImplementation;
     }
 
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    /**
+     * We initialize the dashboard window, settings the stage params.
+     *
+     * @param root The base object for all nodes that have children in the scene
+     * graph.
+     */
     public void initStage(Parent root) {
         Scene scene = new Scene(root);
         stage = new Stage();
         stage.setScene(scene);
         stage.setTitle("Dashboard");
         stage.setResizable(false);
+
+        /*En los dos labels se muestran datos que hemos recibido desde el lado
+        servidor*/
         lbl_Connection.setText("Last connection: " + getFormatterDate());
         lbl_Welcome.setText("Hello " + user.getFullName());
         btn_Logout.setTooltip(new Tooltip("Return to Sign In"));
         stage.show();
     }
 
+    /**
+     * Events related to the Logout button. This method is referenced in
+     * SceneBuilder.
+     *
+     * @param event related to the method is not used.
+     * @throws IOException if there is an input / output error
+     */
     @FXML
     private void handleOnClickLogout(ActionEvent event) throws IOException {
 
@@ -83,14 +107,16 @@ public class DashboardController {
         }
     }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
-
+    /**
+     * Method that changes the data to the desired format
+     *
+     * @return formatted data
+     */
     private String getFormatterDate() {
         String pattern = "dd-M-yyyy HH:mm:ss";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern, new Locale("fr", "FR"));
         String date = simpleDateFormat.format(new Date());
         return date;
     }
+
 }
