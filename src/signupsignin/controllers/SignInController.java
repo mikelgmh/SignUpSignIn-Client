@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package signupsignin.controllers;
 
 // Library
@@ -37,7 +32,9 @@ import javafx.stage.WindowEvent;
 import signupsignin.util.ValidationUtils;
 
 /**
- *
+ * This class handles the interaction of the user with the graphic user
+ * interface, on window sign in.
+ * 
  * @author Iker, Aketza
  */
 public class SignInController {
@@ -66,7 +63,12 @@ public class SignInController {
     public void setSignable(Signable signable) {
         this.signableImplementation = signable;
     }
-
+    /**
+    * We initialize the signin window, settings the stage params.
+    * 
+    * @param root The base object for all nodes that have children in the scene
+     * graph.
+    */
     public void initStage(Parent root) {
         logger.log(Level.INFO, "Loading the SignIn stage.");
         Scene scene = new Scene(root);
@@ -79,35 +81,57 @@ public class SignInController {
         logger.log(Level.INFO, "SignIn stage loaded.");
     }
 
+    /**
+     * Events related to the Logout button. This method is referenced in
+     * SceneBuilder.
+     * 
+     * @param event 
+     */
     private void handleWindowShowing(WindowEvent event) {
         btn_SignIn.setDisable(true);
-        txt_User.setPromptText("Username");
-        txt_Password.setPromptText("Password");
+        txt_User.setPromptText("Insert username");
+        txt_Password.setPromptText("Insert password");
+        btn_SignIn.setDefaultButton(true);
         btn_SignIn.setTooltip(new Tooltip("Send identification values"));
         btn_SignUp.setTooltip(new Tooltip("Create a new account"));
-
     }
 
-    public void setListeners() {
+    
+    /**
+     * Validate that the user and password fields have certain characters
+     */
+     public void setListeners() {
         this.txt_User.textProperty().addListener((obs, oldText, newText) -> {
             this.validationUtils.minLength(this.txt_User, 3, newText, "minLengthValidator");
             this.validationUtils.textLimiter(this.txt_User, 20, newText);
             this.validate();
         });
-
-    }
-
-    public void validate() {
+        this.txt_Password.textProperty().addListener((obs, oldText, newText) -> {
+            this.validationUtils.textLimiter(this.txt_User, 25, newText);
+            this.validate();
+        });
+     }
+     
+     /**
+     * Validates if the user and password field are writed 
+     */
+     public void validate() {
         if (Boolean.parseBoolean(this.txt_User.getProperties().get("minLengthValidator").toString())
-                && !txt_Password.toString().trim().equalsIgnoreCase("")) {
+                && !txt_Password.getText().trim().equalsIgnoreCase("")) {
             this.btn_SignIn.setDisable(false);
         } else {
             this.btn_SignIn.setDisable(true);
         }
     }
 
+    /**
+     * Events related to the logout button. This method is referenced in
+     * SceneBuilder.
+     * @param event
+     * @throws IOException if there is an input / output error
+     */
     @FXML
-    private void handleOnClickRegister(ActionEvent event) throws IOException {
+     private void handleOnClickRegister(ActionEvent event) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/signupsignin/view/SignUp.fxml"));
         Parent root = (Parent) loader.load();
         SignUpController controller = ((SignUpController) loader.getController());
@@ -117,6 +141,21 @@ public class SignInController {
         stage.close();
     }
 
+    /**
+     * Events related to the login button. This method is referenced in
+     * SceneBuilder.
+     * 
+     * @param event
+     * 
+     * The following exceptions show an alert according to the message received
+     * 
+     * @throws IOException input/output error 
+     * @throws exceptions.ErrorConnectingDatabaseException cannot connect to database
+     * @throws exceptions.PasswordMissmatchException password is not correct
+     * @throws exceptions.ErrorClosingDatabaseResources cannot close the database
+     * @throws exceptions.QueryException the query is not correct
+     * @throws exceptions.ErrorConnectingServerException  cannot connect to the server side
+     */
     @FXML
     private void handleOnClickLogin(ActionEvent event) throws IOException {
         logger.log(Level.INFO, "Attempting to sign in.");
@@ -138,41 +177,47 @@ public class SignInController {
             stage.close();
             logger.log(Level.INFO, "Signed In successfully");
         } catch (ErrorConnectingDatabaseException ex) {
-            logger.log(Level.WARNING, "Error connecting to the database.");
+            logger.log(Level.SEVERE, "Error connecting to the database.");
             Alert alertConnectingToDatabase = new Alert(Alert.AlertType.ERROR);
-            alertConnectingToDatabase.setTitle("Error with the server");
-            alertConnectingToDatabase.setContentText("Error connecting to the server. Contact the Administrator.");
+            alertConnectingToDatabase.setTitle("Error with the server.");
+            alertConnectingToDatabase.setHeaderText("Error connecting to the database.");
+            alertConnectingToDatabase.setContentText("An error ocurred trying to connect to the database. Contact the Administrator.");
             alertConnectingToDatabase.showAndWait();
         } catch (UserNotFoundException ex) {
-            logger.log(Level.WARNING, "User not found.");
+            logger.log(Level.SEVERE, "User not found.");
             Alert alertUserNotFound = new Alert(Alert.AlertType.WARNING);
-            alertUserNotFound.setTitle("User not found");
-            alertUserNotFound.setContentText("The user entered does not exist.");
+            alertUserNotFound.setTitle("User not found.");
+            alertUserNotFound.setHeaderText("User not found.");
+            alertUserNotFound.setContentText("The user entered does not exist in the database.");
             alertUserNotFound.showAndWait();
         } catch (PasswordMissmatchException ex) {
-            logger.log(Level.WARNING, "The password inserted does not match.");
+            logger.log(Level.SEVERE, "The password inserted does not match with the current user.");
             Alert alertPasswordNoMatch = new Alert(Alert.AlertType.WARNING);
             alertPasswordNoMatch.setTitle("The password does not match.");
-            alertPasswordNoMatch.setContentText("The password is incorrect.");
+            alertPasswordNoMatch.setHeaderText("Incorrect password.");
+            alertPasswordNoMatch.setContentText("The password inserted does not match with the current user. Enter a valid password.");
             alertPasswordNoMatch.showAndWait();
         } catch (ErrorClosingDatabaseResources ex) {
-            logger.log(Level.WARNING, "Error closing the database resources.");
+            logger.log(Level.SEVERE, "Error closing the database resources.");
             Alert alertClosingDatabase = new Alert(Alert.AlertType.ERROR);
-            alertClosingDatabase.setTitle("Unexpected error");
-            alertClosingDatabase.setContentText("Unexpected error ocurred. Contact the Administrator.");
+            alertClosingDatabase.setTitle("Unexpected error.");
+            alertClosingDatabase.setHeaderText("Unexpected error ocurred.");
+            alertClosingDatabase.setContentText("An unexpected error ocurred with the database. Contact the server Administrator.");
             alertClosingDatabase.showAndWait();
         } catch (QueryException ex) {
-            logger.log(Level.WARNING, "Error connecting to the database.");
+            logger.log(Level.SEVERE, "Error doing a query in the database.");
             Alert alertConnectingToDatabase = new Alert(Alert.AlertType.ERROR);
             alertConnectingToDatabase.setTitle("Unexpected error");
-            alertConnectingToDatabase.setContentText("Unexpected error ocurred. Contact the Administrator.");
+            alertConnectingToDatabase.setHeaderText("Unexpected error ocurred.");
+            alertConnectingToDatabase.setContentText("An unexpected error ocurred with the database. Contact the server Administrator.");
             alertConnectingToDatabase.showAndWait();
         } catch (ErrorConnectingServerException ex) {
-            Logger.getLogger(SignInController.class.getName()).log(Level.SEVERE, null, ex);
-            Alert alertCouldntReachServer = new Alert(Alert.AlertType.ERROR);
-            alertCouldntReachServer.setTitle("Connection error.");
-            alertCouldntReachServer.setContentText("The server couldn't be reached.");
-            alertCouldntReachServer.showAndWait();
+            logger.log(Level.SEVERE, "Error connecting to the server.");
+            Alert alertConnectingToDatabase = new Alert(Alert.AlertType.ERROR);
+            alertConnectingToDatabase.setTitle("Error with the server.");
+            alertConnectingToDatabase.setHeaderText("Error connecting to the server.");
+            alertConnectingToDatabase.setContentText("Can not connect to the server, try to restart the application or contact the server Administrator.");
+            alertConnectingToDatabase.showAndWait();
         }
     }
 }

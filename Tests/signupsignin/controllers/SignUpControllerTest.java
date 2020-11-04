@@ -11,6 +11,7 @@ import static org.junit.Assert.*;
 import java.util.concurrent.TimeoutException;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
@@ -24,12 +25,14 @@ import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import static org.testfx.matcher.base.NodeMatchers.isDisabled;
 import static org.testfx.matcher.base.NodeMatchers.isEnabled;
+import static org.testfx.matcher.base.NodeMatchers.isFocused;
+import static org.testfx.matcher.base.NodeMatchers.isNull;
 import static org.testfx.matcher.base.NodeMatchers.isVisible;
 import static org.testfx.matcher.control.TextInputControlMatchers.hasText;
 
 /**
  *
- * @author Mikel
+ * @author Mikel, Imanol
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class SignUpControllerTest extends ApplicationTest {
@@ -39,14 +42,8 @@ public class SignUpControllerTest extends ApplicationTest {
             + "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
             + "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
     private static final String VALID_EMAIL = "validEmail@gmail.com";
-    private TextField txt_Firstname;
-    private TextField txt_Lastname;
     private TextField txt_Email;
-    private TextField txt_Username;
-    private ProgressIndicator progress_username;
-    private PasswordField txt_Password;
-    private PasswordField txt_RepeatPassword;
-    private Button btn_SignUp;
+   
 
     public SignUpControllerTest() {
     }
@@ -60,28 +57,53 @@ public class SignUpControllerTest extends ApplicationTest {
     @Override
     public void start(Stage stage) throws Exception {
         new SignUpSignInClient().start(stage);
-        clickOn("#btnSignUp");
+        clickOn("#btn_SignUp");
     }
 
     @Override
     public void stop() {
     }
-
+    
     @Test
-    public void testA_SignUpButtonDisabledOnStart() {
+    public void testA_SignUpButtonDisabledOnStartTest() {
+        verifyThat("#txt_Firstname", isFocused());
+        verifyThat("#txt_Firstname", hasText(""));
+        verifyThat("#txt_Lastname", hasText(""));
+        verifyThat("#txt_Email", hasText(""));
+        verifyThat("#txt_Username", hasText(""));
+        verifyThat("#txt_Password", hasText(""));
+        verifyThat("#txt_RepeatPassword", hasText(""));
+        verifyThat("#btn_Cancel", isEnabled());
         verifyThat("#btn_SignUp", isDisabled());
     }
-
+    
     @Test
     public void testB_cancelButtonTest() {
         clickOn("#btn_Cancel");
-        verifyThat("#signInPane", isVisible());
-        clickOn("#btnSignUp");
-        verifyThat("#signUpPane", isVisible());
-    }
-
+        clickOn("Aceptar");
+        verifyThat("#paneSignIn", isVisible());
+    }   
+    
+    
     @Test
-    public void testC_emailValidTest() {
+    public void testC_SignUpIncorrectPasswordTest() {
+        clickOn("#txt_Firstname");
+        write("Jaime");
+        clickOn("#txt_Lastname");
+        write("San Sebastian");
+        clickOn("#txt_Email");
+        write("sebas@gmail.com");
+        clickOn("#txt_Username");
+        write("JSebas");
+        clickOn("#txt_Password");
+        write("Password01&");
+        clickOn("#txt_RepeatPassword");
+        write("99Password&");
+        verifyThat("#btn_SignUp", isDisabled());     
+    }
+    
+    @Test
+    public void testD_emailValidTest() {
         this.txt_Email = lookup("#txt_Email").query();
         clickOn("#txt_Email").write(OVERSIZED_TEXT);
         assertEquals(this.txt_Email.getProperties().get("emailValidator"), false);
@@ -89,5 +111,25 @@ public class SignUpControllerTest extends ApplicationTest {
         clickOn("#txt_Email").write(VALID_EMAIL);
         assertEquals(this.txt_Email.getProperties().get("emailValidator"), true);
     }
-
+    
+    
+    @Test
+    public void testE_successfulSignUpTest() {
+        clickOn("#txt_Firstname");
+        write("Jaime");
+        clickOn("#txt_Lastname");
+        write("San Sebastian");
+        clickOn("#txt_Email");
+        write("sebas@gmail.com");
+        clickOn("#txt_Username");
+        write("JSebas");
+        clickOn("#txt_Password");
+        write("Password01&");
+        clickOn("#txt_RepeatPassword");
+        write("Password01&");
+        verifyThat("#btn_SignUp", isEnabled());
+        clickOn("#btn_SignUp");
+        clickOn("Aceptar");
+        verifyThat("#paneSignIn", isVisible());
+    }
 }
