@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package signupsignin.controllers;
 
 import exceptions.ErrorConnectingDatabaseException;
@@ -249,7 +244,7 @@ public class SignUpController {
     /**
      * Method that indicates that, by pressing the signup button, it registers 
      * the user on database. After that, the client gets one alert sowhing the user
-     * the registration has been successful.
+     * the registration has been successful. 
      */
     public void signUpButtonClickHandler() {
         //Barra de progreso que indica el estado del registro.
