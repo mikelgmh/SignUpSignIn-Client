@@ -41,7 +41,7 @@ import user.UserStatus;
 
 /**
  * This class handles the interaction of the user with the graphic user
- * interface.
+ * interface, on window sign up.
  *
  * @author Mikel
  */
@@ -208,6 +208,11 @@ public class SignUpController {
 
     }
 
+    /**
+     * This method sets the password fields in red if they do not match each other
+     * 
+     * @param passwordsMatch boolean indicating if the password is matching or not
+     */
     public void setPasswordFieldsError(Boolean passwordsMatch) {
         if (!passwordsMatch) {
             this.hint_Password.setTextFill(Color.RED);
@@ -224,6 +229,9 @@ public class SignUpController {
         }
     }
 
+    /**
+     * Check if all the fields are correct. If so, enable the signup button
+     */
     public void validate() {
         if (Boolean.parseBoolean(this.txt_Email.getProperties().get("emailValidator").toString())
                 && Boolean.parseBoolean(this.txt_Firstname.getProperties().get("minLengthValidator").toString())
@@ -238,10 +246,20 @@ public class SignUpController {
         }
     }
 
+    /**
+     * Method that indicates that, by pressing the signup button, it registers 
+     * the user on database. After that, the client gets one alert sowhing the user
+     * the registration has been successful.
+     */
     public void signUpButtonClickHandler() {
+        //Barra de progreso que indica el estado del registro.
         progress_indicator.setVisible(true);
+        
+        //Boton de registro desactivado.
         btn_SignUp.setDisable(true);
         try {
+            //Establecer parametros de usuario
+            
             User user = new User();
             user.setEmail(this.txt_Email.getText());
             user.setFullName(this.txt_Firstname.getText() + " " + this.txt_Lastname.getText());
@@ -249,16 +267,27 @@ public class SignUpController {
             user.setPrivilege(UserPrivilege.USER);
             user.setStatus(UserStatus.ENABLED);
             user.setLogin(this.txt_Username.getText());
+            
+            //Llama a la clase implementación para mandar el usuario al servidor.
             this.signableImplementation.signUp(user);
             btn_SignUp.setDisable(false);
+            
+            //Si no hay error, informa al usuario que el registro ha sido correcto.
             Alert alert = new Alert(AlertType.CONFIRMATION);
             alert.setTitle("Signed Up Successfully");
+            
+            /*Haciendo click en la alerta y comprobando que no ha habido errores,
+            abre la ventana de signin.*/
+            
             String s = "You have been signed up. Do you want to go to the login screen?";
             alert.setContentText(s);
             Optional<ButtonType> result = alert.showAndWait();
             if ((result.isPresent()) && (result.get() == ButtonType.OK)) {
                 this.changeStageToLogin();
             }
+            
+            /*Se capturan los distintos errores posibles, mostrando la 
+            correspondiente alerta al usuario.*/
         } catch (ErrorConnectingDatabaseException ex) {
             Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, null, ex);
             btn_SignUp.setDisable(false);
@@ -285,11 +314,15 @@ public class SignUpController {
             Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, null, ex);
             btn_SignUp.setDisable(false);
         } finally {
+            //Cuando acaba todo el proceso de registro, desaparece el indicador de progreso.
             progress_indicator.setVisible(false);
 
         }
     }
 
+    /**
+     * Closes the current stage and open a new one with the signin controller.
+     */
     public void changeStageToLogin() {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/signupsignin/view/SignIn.fxml"));
         Parent root = null;
@@ -307,6 +340,10 @@ public class SignUpController {
         controller.initStage(root);
     }
 
+    /**
+     * If the cancel button is pressed, it asks the user if they are sure to 
+     * return to the login window.
+     */
     public void backButtonClickHandler() {
         Alert alert = new Alert(AlertType.CONFIRMATION);
         alert.setTitle("Go back");
