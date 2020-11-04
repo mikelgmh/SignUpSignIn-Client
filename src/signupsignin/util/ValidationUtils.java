@@ -13,7 +13,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 
 /**
- *
+ * Class containing "regex", referenced from controllers to validate data
+ * 
  * @author Mikel
  */
 public class ValidationUtils {
@@ -21,9 +22,6 @@ public class ValidationUtils {
     public ValidationUtils() {
     }
 
-    //public void inputValidationColors(TextField tf, String labelText, String textFieldCssClass, boolean addTextFieldClass, Label label) {
-    //   addClass(tf, textFieldCssClass, addTextFieldClass);
-    // }
     public void addClass(TextField tf, String cssClass, Boolean addClass) {
         ObservableList<String> styleClass = tf.getStyleClass();
         if (addClass) {

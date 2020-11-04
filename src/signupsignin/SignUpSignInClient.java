@@ -19,7 +19,8 @@ import signupsignin.signable.SignableFactory;
 
 /**
  *
- * @author
+ * 
+ * @author Iker, Aketza
  */
 public class SignUpSignInClient extends Application {
 

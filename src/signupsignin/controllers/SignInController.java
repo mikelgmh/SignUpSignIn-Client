@@ -37,7 +37,9 @@ import javafx.stage.WindowEvent;
 import signupsignin.util.ValidationUtils;
 
 /**
- *
+ * This class handles the interaction of the user with the graphic user
+ * interface, on window sign in.
+ * 
  * @author Iker, Aketza
  */
 public class SignInController {
@@ -66,7 +68,12 @@ public class SignInController {
     public void setSignable(Signable signable) {
         this.signableImplementation = signable;
     }
-
+    /**
+    * We initialize the signin window, settings the stage params.
+    * 
+    * @param root The base object for all nodes that have children in the scene
+     * graph.
+    */
     public void initStage(Parent root) {
         logger.log(Level.INFO, "Loading the SignIn stage.");
         Scene scene = new Scene(root);
@@ -79,6 +86,12 @@ public class SignInController {
         logger.log(Level.INFO, "SignIn stage loaded.");
     }
 
+    /**
+     * Events related to the Logout button. This method is referenced in
+     * SceneBuilder.
+     * 
+     * @param event 
+     */
     private void handleWindowShowing(WindowEvent event) {
         btn_SignIn.setDisable(true);
         txt_User.setPromptText("Username");
@@ -88,6 +101,9 @@ public class SignInController {
 
     }
 
+    /**
+     * Validates that the user has between 3 and 20 characters
+     */
     public void setListeners() {
         this.txt_User.textProperty().addListener((obs, oldText, newText) -> {
             this.validationUtils.minLength(this.txt_User, 3, newText, "minLengthValidator");
@@ -97,6 +113,9 @@ public class SignInController {
 
     }
 
+    /**
+     * Validates if the user and password are writed correctly
+     */
     public void validate() {
         if (Boolean.parseBoolean(this.txt_User.getProperties().get("minLengthValidator").toString())
                 && !txt_Password.toString().trim().equalsIgnoreCase("")) {
@@ -106,6 +125,12 @@ public class SignInController {
         }
     }
 
+    /**
+     * Events related to the logout button. This method is referenced in
+     * SceneBuilder.
+     * @param event
+     * @throws IOException if there is an input / output error
+     */
     @FXML
     private void handleOnClickRegister(ActionEvent event) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/signupsignin/view/SignUp.fxml"));
@@ -117,6 +142,22 @@ public class SignInController {
         stage.close();
     }
 
+    /**
+     * Events related to the login button. This method is referenced in
+     * SceneBuilder.
+     * 
+     * @param event
+     * 
+     * The following exceptions show an alert according to the message received
+     * 
+     * @throws IOException 
+     * @throws ErrorConnectingDatabaseException
+     * @throws UserNotFoundException
+     * @throws PasswordMismatchException
+     * @throws ErrorClosingDatabaseResources
+     * @throws QueryException 
+     * @throws ErrorConnectingServerException 
+     */
     @FXML
     private void handleOnClickLogin(ActionEvent event) throws IOException {
         logger.log(Level.INFO, "Attempting to sign in.");
