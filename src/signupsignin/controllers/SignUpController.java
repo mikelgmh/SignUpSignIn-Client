@@ -42,6 +42,7 @@ import user.UserStatus;
  */
 public class SignUpController {
 
+    private static final Logger logger = Logger.getLogger("signupsignin.controllers.SignUpController");
     private ValidationUtils validationUtils = new ValidationUtils(); // Useful to reuse some validations in different controllers.
     private static final String MIN_THREE_CHARACTERS = "Min 3 characters";
     private static final String ENTER_VALID_EMAIL = "Type a valid email.";
@@ -245,6 +246,10 @@ public class SignUpController {
      * Method that indicates that, by pressing the signup button, it registers 
      * the user on database. After that, the client gets one alert sowhing the user
      * the registration has been successful. 
+     * @throws exceptions.UserAlreadyExistException user exist
+     * @throws exceptions.ErrorConnectingDatabaseException cannot connect to database
+     * @throws exceptions.QueryException the query is not correct
+     * @throws exceptions.ErrorConnectingServerException cannot connect to the server side
      */
     public void signUpButtonClickHandler() {
         //Barra de progreso que indica el estado del registro.
@@ -284,9 +289,11 @@ public class SignUpController {
             /*Se capturan los distintos errores posibles, mostrando la 
             correspondiente alerta al usuario.*/
         } catch (ErrorConnectingDatabaseException ex) {
+            logger.log(Level.SEVERE, "Attempting to sign in.");
             Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, null, ex);
             btn_SignUp.setDisable(false);
         } catch (UserAlreadyExistException ex) {
+            logger.log(Level.SEVERE, "User already exist.");
             this.btn_SignUp.setDisable(true);
             this.hint_Username.setText("The username or the email already exists.");
             this.hint_Email.setText("The username or the email already exists.");
@@ -295,7 +302,7 @@ public class SignUpController {
             this.validationUtils.addClass(this.txt_Email, "error", Boolean.TRUE);
             this.validationUtils.addClass(this.txt_Username, "error", Boolean.TRUE);
         } catch (QueryException ex) {
-            Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, null, ex);
+            logger.log(Level.SEVERE, "Error doing a query in the database.");
             btn_SignUp.setDisable(false);
         } catch (ErrorConnectingServerException ex) {
             Alert alert = new Alert(AlertType.CONFIRMATION);
@@ -306,7 +313,7 @@ public class SignUpController {
             if ((result.isPresent()) && (result.get() == ButtonType.OK)) {
                 this.signUpButtonClickHandler();
             }
-            Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, null, ex);
+            logger.log(Level.SEVERE, "Error connecting to the server.");
             btn_SignUp.setDisable(false);
         } finally {
             //Cuando acaba todo el proceso de registro, desaparece el indicador de progreso.
@@ -325,7 +332,7 @@ public class SignUpController {
             root = (Parent) loader.load();
             stage.close();
         } catch (IOException ex) {
-            Logger.getLogger(SignInController.class.getName()).log(Level.SEVERE, null, ex);
+            logger.log(Level.SEVERE, "Cant change to login stage.");
         }
 
         SignInController controller = ((SignInController) loader.getController());

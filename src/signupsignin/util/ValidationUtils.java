@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package signupsignin.util;
 
 import java.util.Collections;
@@ -13,7 +8,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 
 /**
- * Class containing "regex", referenced from controllers to validate data
+ * Class containing "regex", referenced from controllers to validate data format.
  * 
  * @author Mikel
  */

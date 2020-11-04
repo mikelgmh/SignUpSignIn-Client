@@ -26,6 +26,8 @@ import user.User;
  */
 public class SignableImplementation implements Signable {
 
+    private static final Logger logger = Logger.getLogger("signupsignin.signable.SignableImplementation");
+    
     // Empty constructor
     public SignableImplementation() {
 
@@ -38,12 +40,12 @@ public class SignableImplementation implements Signable {
      * @param user The user object that contains the username and password to
      * login.
      * @return The user that has been logged in.
-     * @throws exceptions.UserNotFoundException
-     * @throws exceptions.ErrorConnectingDatabaseException
-     * @throws exceptions.PasswordMissmatchException
-     * @throws exceptions.ErrorClosingDatabaseResources
-     * @throws exceptions.QueryException
-     * @throws exceptions.ErrorConnectingServerException
+     * @throws exceptions.UserNotFoundException user doesnt exist
+     * @throws exceptions.ErrorConnectingDatabaseException cannot connect to database
+     * @throws exceptions.PasswordMissmatchException password is not correct
+     * @throws exceptions.ErrorClosingDatabaseResources cannot close the database
+     * @throws exceptions.QueryException the query is not correct
+     * @throws exceptions.ErrorConnectingServerException  cannot connect to the server side
      */
     @Override
     public User signIn(User user) throws UserNotFoundException, ErrorConnectingDatabaseException,
@@ -54,7 +56,7 @@ public class SignableImplementation implements Signable {
             serverConnector.start();
             serverConnector.join();
         } catch (InterruptedException ex) {
-            Logger.getLogger(SignableImplementation.class.getName()).log(Level.SEVERE, null, ex);
+            logger.log(Level.SEVERE, "Error starting client thread.");
         }
         message = serverConnector.getMessage();
 
@@ -63,13 +65,15 @@ public class SignableImplementation implements Signable {
             case USER_DOES_NOT_EXIST:
                 throw new UserNotFoundException();
             case CONNECTION_ERROR:
-                throw new ErrorConnectingDatabaseException();
+                throw new ErrorConnectingServerException();
             case LOGIN_ERROR:
                 throw new PasswordMissmatchException();
             case DATABASE_ERROR:
-                throw new ErrorClosingDatabaseResources();
+                throw new ErrorConnectingDatabaseException();
             case QUERY_ERROR:
                 throw new QueryException();
+            case STOP_SERVER:
+                throw new ErrorClosingDatabaseResources();
             default:
                 break;
         }
@@ -81,10 +85,10 @@ public class SignableImplementation implements Signable {
      *
      * @param user The user object that contains the needed info to sign up.
      * @return The user that has been signed up.
-     * @throws exceptions.UserAlreadyExistException
-     * @throws exceptions.ErrorConnectingDatabaseException
-     * @throws exceptions.QueryException
-     * @throws exceptions.ErrorConnectingServerException
+     * @throws exceptions.UserAlreadyExistException user exist
+     * @throws exceptions.ErrorConnectingDatabaseException cannot connect to database
+     * @throws exceptions.QueryException the query is not correct
+     * @throws exceptions.ErrorConnectingServerException cannot connect to the server side
      */
     @Override
     public User signUp(User user) throws UserAlreadyExistException, ErrorConnectingServerException, ErrorConnectingDatabaseException, QueryException {
@@ -94,7 +98,7 @@ public class SignableImplementation implements Signable {
             serverConnector.start();
             serverConnector.join();
         } catch (InterruptedException ex) {
-            Logger.getLogger(SignableImplementation.class.getName()).log(Level.SEVERE, null, ex);
+            logger.log(Level.SEVERE, "Error starting client thread.");
             throw new ErrorConnectingServerException();
         }
         message = serverConnector.getMessage();
@@ -108,7 +112,7 @@ public class SignableImplementation implements Signable {
             case QUERY_ERROR:
                 throw new QueryException();
         }
-        return user;
+        return message.getUser();
     }
 
 }
@@ -125,7 +129,7 @@ class ServerConnector extends Thread {
     private ResourceBundle rb = ResourceBundle.getBundle("config.config");
     private Socket clientSocket;
     private Message message = null;
-
+    
     public Message getMessage() {
         return message;
     }
@@ -145,7 +149,8 @@ class ServerConnector extends Thread {
             this.getMessageFromServer();
             this.stopConnection();
         } catch (ErrorConnectingServerException ex) {
-            Logger.getLogger(ServerConnector.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SignableImplementation.class.getName()).log(Level.SEVERE, null, ex);
+            this.message.setType(TypeMessage.CONNECTION_ERROR); // Cambiamos el tipo de mensaje para que salte por la excepción ErrorConnectingServerException.
         }
     }
 
