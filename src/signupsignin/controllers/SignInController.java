@@ -72,12 +72,11 @@ public class SignInController {
     public void initStage(Parent root) {
         logger.log(Level.INFO, "Loading the SignIn stage.");
         Scene scene = new Scene(root);
+        this.setListeners();
         stage.setScene(scene);
         stage.setTitle("Login");
         stage.setResizable(false);
         stage.setOnShowing(this::handleWindowShowing);
-        txt_User.textProperty().addListener(this::textChanged);
-        txt_Password.textProperty().addListener(this::textChanged);
         stage.show();
         logger.log(Level.INFO, "SignIn stage loaded.");
     }
@@ -97,15 +96,31 @@ public class SignInController {
         btn_SignUp.setTooltip(new Tooltip("Create a new account"));
     }
 
+    
     /**
+     * Validate that the user and password fields have certain characters
+     */
+     public void setListeners() {
+        this.txt_User.textProperty().addListener((obs, oldText, newText) -> {
+            this.validationUtils.minLength(this.txt_User, 3, newText, "minLengthValidator");
+            this.validationUtils.textLimiter(this.txt_User, 20, newText);
+            this.validate();
+        });
+        this.txt_Password.textProperty().addListener((obs, oldText, newText) -> {
+            this.validationUtils.textLimiter(this.txt_User, 25, newText);
+            this.validate();
+        });
+     }
+     
+     /**
      * Validates if the user and password field are writed 
      */
-
-    private void textChanged(ObservableValue observable, String oldValue, String newValue) {
-        if (this.txt_User.getText().trim().equals("") || this.txt_Password.getText().trim().equals("")) {
-            btn_SignIn.setDisable(true);
+     public void validate() {
+        if (Boolean.parseBoolean(this.txt_User.getProperties().get("minLengthValidator").toString())
+                && !txt_Password.getText().trim().equalsIgnoreCase("")) {
+            this.btn_SignIn.setDisable(false);
         } else {
-            btn_SignIn.setDisable(false);
+            this.btn_SignIn.setDisable(true);
         }
     }
 
