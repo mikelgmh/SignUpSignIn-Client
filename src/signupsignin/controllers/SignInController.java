@@ -29,7 +29,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import signupsignin.util.ValidationUtils;
 
 /**
  * This class handles the interaction of the user with the graphic user
@@ -40,7 +39,6 @@ import signupsignin.util.ValidationUtils;
 public class SignInController {
 
     private static final Logger logger = Logger.getLogger("signupsignin.controllers.SignInController");
-    private ValidationUtils validationUtils = new ValidationUtils();
     private Stage stage;
     private Signable signableImplementation;
 
@@ -72,11 +70,12 @@ public class SignInController {
     public void initStage(Parent root) {
         logger.log(Level.INFO, "Loading the SignIn stage.");
         Scene scene = new Scene(root);
-        this.setListeners();
         stage.setScene(scene);
         stage.setTitle("Login");
         stage.setResizable(false);
         stage.setOnShowing(this::handleWindowShowing);
+        txt_User.textProperty().addListener(this::textChanged);
+        txt_Password.textProperty().addListener(this::textChanged);
         stage.show();
         logger.log(Level.INFO, "SignIn stage loaded.");
     }
@@ -95,32 +94,20 @@ public class SignInController {
         btn_SignIn.setTooltip(new Tooltip("Send identification values"));
         btn_SignUp.setTooltip(new Tooltip("Create a new account"));
     }
-
     
     /**
-     * Validate that the user and password fields have certain characters
+     * Events related to the Login labels. This method comprobates if the labels
+     * state to activate or desactivate the Sign In button.
+     * 
+     * @param observable
+     * @param oldValue
+     * @param newValue 
      */
-     public void setListeners() {
-        this.txt_User.textProperty().addListener((obs, oldText, newText) -> {
-            this.validationUtils.minLength(this.txt_User, 3, newText, "minLengthValidator");
-            this.validationUtils.textLimiter(this.txt_User, 20, newText);
-            this.validate();
-        });
-        this.txt_Password.textProperty().addListener((obs, oldText, newText) -> {
-            this.validationUtils.textLimiter(this.txt_User, 25, newText);
-            this.validate();
-        });
-     }
-     
-     /**
-     * Validates if the user and password field are writed 
-     */
-     public void validate() {
-        if (Boolean.parseBoolean(this.txt_User.getProperties().get("minLengthValidator").toString())
-                && !txt_Password.getText().trim().equalsIgnoreCase("")) {
-            this.btn_SignIn.setDisable(false);
+    private void textChanged(ObservableValue observable, String oldValue, String newValue) {
+        if (this.txt_User.getText().trim().equals("") || this.txt_Password.getText().trim().equals("")) {
+            btn_SignIn.setDisable(true);
         } else {
-            this.btn_SignIn.setDisable(true);
+            btn_SignIn.setDisable(false);
         }
     }
 

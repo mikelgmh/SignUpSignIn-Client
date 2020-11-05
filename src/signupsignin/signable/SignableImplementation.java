@@ -22,7 +22,7 @@ import user.User;
  * send a Message object to the server using a thread defined in the class
  * below.
  *
- * @author: Mikel
+ * @author: Mikel, Iker
  */
 public class SignableImplementation implements Signable {
 

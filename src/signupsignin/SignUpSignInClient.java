@@ -21,6 +21,11 @@ public class SignUpSignInClient extends Application {
 
     private static final Logger logger = Logger.getLogger("signupsignin.SignUpSignInClient");
 
+    /**
+     * The start method in which the JavaFX starts.
+     * @param stage the first stage of the JavaFX application.
+     * @throws Exception if there ocurred something wrong creating the first stage.
+     */
     @Override
     public void start(Stage stage) throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/signupsignin/view/SignIn.fxml"));
@@ -34,6 +39,7 @@ public class SignUpSignInClient extends Application {
     }
 
     /**
+     * The main method in which the program starts.
      * @param args the command line arguments
      */
     public static void main(String[] args) {
