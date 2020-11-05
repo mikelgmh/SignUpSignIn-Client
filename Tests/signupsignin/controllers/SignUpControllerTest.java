@@ -6,14 +6,8 @@
 package signupsignin.controllers;
 
 import signupsignin.SignUpSignInClient;
-import org.junit.Test;
 import static org.junit.Assert.*;
 import java.util.concurrent.TimeoutException;
-import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.junit.BeforeClass;
@@ -26,7 +20,6 @@ import org.testfx.framework.junit.ApplicationTest;
 import static org.testfx.matcher.base.NodeMatchers.isDisabled;
 import static org.testfx.matcher.base.NodeMatchers.isEnabled;
 import static org.testfx.matcher.base.NodeMatchers.isFocused;
-import static org.testfx.matcher.base.NodeMatchers.isNull;
 import static org.testfx.matcher.base.NodeMatchers.isVisible;
 import static org.testfx.matcher.control.TextInputControlMatchers.hasText;
 
@@ -57,6 +50,7 @@ public class SignUpControllerTest extends ApplicationTest {
     @Override
     public void start(Stage stage) throws Exception {
         new SignUpSignInClient().start(stage);
+        stage.show();
         clickOn("#btn_SignUp");
     }
 
@@ -78,7 +72,7 @@ public class SignUpControllerTest extends ApplicationTest {
     }
     
     @Test
-    public void testB_cancelButtonTest() {
+    public void testC_cancelButtonTest() {
         clickOn("#btn_Cancel");
         clickOn("Aceptar");
         verifyThat("#paneSignIn", isVisible());
@@ -86,7 +80,7 @@ public class SignUpControllerTest extends ApplicationTest {
     
     
     @Test
-    public void testC_SignUpIncorrectPasswordTest() {
+    public void testB_SignUpIncorrectPasswordTest() {
         clickOn("#txt_Firstname");
         write("Jaime");
         clickOn("#txt_Lastname");
@@ -103,31 +97,23 @@ public class SignUpControllerTest extends ApplicationTest {
     }
     
     @Test
-    public void testD_emailValidTest() {
-        this.txt_Email = lookup("#txt_Email").query();
-        clickOn("#txt_Email").write(OVERSIZED_TEXT);
-        assertEquals(this.txt_Email.getProperties().get("emailValidator"), false);
-        this.txt_Email.clear(); // Clear input text
-        clickOn("#txt_Email").write(VALID_EMAIL);
-        assertEquals(this.txt_Email.getProperties().get("emailValidator"), true);
-    }
-    
-    
-    @Test
-    public void testE_successfulSignUpTest() {
+    public void testD_emailValidAndRegisterTest() {
         clickOn("#txt_Firstname");
         write("Jaime");
         clickOn("#txt_Lastname");
         write("San Sebastian");
-        clickOn("#txt_Email");
-        write("sebas@gmail.com");
+        this.txt_Email = lookup("#txt_Email").query();
+        clickOn("#txt_Email").write(OVERSIZED_TEXT);
+        assertEquals(this.txt_Email.getProperties().get("emailValidator"), false);
         clickOn("#txt_Username");
         write("JSebas");
         clickOn("#txt_Password");
         write("Password01&");
         clickOn("#txt_RepeatPassword");
         write("Password01&");
-        verifyThat("#btn_SignUp", isEnabled());
+        this.txt_Email.clear(); // Clear input text
+        clickOn("#txt_Email").write(VALID_EMAIL);
+        assertEquals(this.txt_Email.getProperties().get("emailValidator"), true);
         clickOn("#btn_SignUp");
         clickOn("Aceptar");
         verifyThat("#paneSignIn", isVisible());
