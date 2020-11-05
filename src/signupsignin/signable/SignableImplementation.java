@@ -27,7 +27,7 @@ import user.User;
 public class SignableImplementation implements Signable {
 
     private static final Logger logger = Logger.getLogger("signupsignin.signable.SignableImplementation");
-    
+
     // Empty constructor
     public SignableImplementation() {
 
@@ -41,11 +41,14 @@ public class SignableImplementation implements Signable {
      * login.
      * @return The user that has been logged in.
      * @throws exceptions.UserNotFoundException user doesnt exist
-     * @throws exceptions.ErrorConnectingDatabaseException cannot connect to database
+     * @throws exceptions.ErrorConnectingDatabaseException cannot connect to
+     * database
      * @throws exceptions.PasswordMissmatchException password is not correct
-     * @throws exceptions.ErrorClosingDatabaseResources cannot close the database
+     * @throws exceptions.ErrorClosingDatabaseResources cannot close the
+     * database
      * @throws exceptions.QueryException the query is not correct
-     * @throws exceptions.ErrorConnectingServerException  cannot connect to the server side
+     * @throws exceptions.ErrorConnectingServerException cannot connect to the
+     * server side
      */
     @Override
     public User signIn(User user) throws UserNotFoundException, ErrorConnectingDatabaseException,
@@ -86,12 +89,15 @@ public class SignableImplementation implements Signable {
      * @param user The user object that contains the needed info to sign up.
      * @return The user that has been signed up.
      * @throws exceptions.UserAlreadyExistException user exist
-     * @throws exceptions.ErrorConnectingDatabaseException cannot connect to database
+     * @throws exceptions.EmailAlreadyExistsException
+     * @throws exceptions.ErrorConnectingDatabaseException cannot connect to
+     * database
      * @throws exceptions.QueryException the query is not correct
-     * @throws exceptions.ErrorConnectingServerException cannot connect to the server side
+     * @throws exceptions.ErrorConnectingServerException cannot connect to the
+     * server side
      */
     @Override
-    public User signUp(User user) throws UserAlreadyExistException, ErrorConnectingServerException, ErrorConnectingDatabaseException, QueryException {
+    public User signUp(User user) throws UserAlreadyExistException, EmailAlreadyExistsException, UserAndEmailAlreadyExistException, ErrorConnectingServerException, ErrorConnectingDatabaseException, QueryException {
         Message message = new Message(user, TypeMessage.SIGN_UP);
         ServerConnector serverConnector = new ServerConnector(message);
         try {
@@ -111,6 +117,10 @@ public class SignableImplementation implements Signable {
                 throw new ErrorConnectingDatabaseException();
             case QUERY_ERROR:
                 throw new QueryException();
+            case EMAIL_EXISTS:
+                throw new EmailAlreadyExistsException();
+            case USER_AND_EMAIL_EXIST:
+                throw new UserAndEmailAlreadyExistException();
         }
         return message.getUser();
     }
@@ -129,7 +139,7 @@ class ServerConnector extends Thread {
     private ResourceBundle rb = ResourceBundle.getBundle("config.config");
     private Socket clientSocket;
     private Message message = null;
-    
+
     public Message getMessage() {
         return message;
     }

@@ -1,9 +1,11 @@
 package signupsignin.controllers;
 
+import exceptions.EmailAlreadyExistsException;
 import exceptions.ErrorConnectingDatabaseException;
 import exceptions.ErrorConnectingServerException;
 import exceptions.QueryException;
 import exceptions.UserAlreadyExistException;
+import exceptions.UserAndEmailAlreadyExistException;
 import interfaces.Signable;
 import javafx.scene.paint.Color;
 import java.io.IOException;
@@ -87,9 +89,6 @@ public class SignUpController {
     private TextField txt_Username;
 
     @FXML
-    private ProgressIndicator progress_indicator;
-
-    @FXML
     private PasswordField txt_Password;
 
     @FXML
@@ -138,9 +137,11 @@ public class SignUpController {
         txt_RepeatPassword.getProperties().put("passwordRequirements", false);
         txt_RepeatPassword.getProperties().put("passwordsMatch", false);
 
+        logger.log(Level.INFO, "Preparing window.");
         // Creates a scena and a stage and opens the window.
         Scene scene = new Scene(parent);
         Stage stage = new Stage();
+        logger.log(Level.INFO, "Setting listeners for the components of the window.");
         this.setListeners();
         this.setStage(stage);
         stage.setScene(scene);
@@ -187,7 +188,7 @@ public class SignUpController {
             this.validationUtils.textLimiter(this.txt_Username, 20, newText);
             this.hint_Username.setTextFill(greyColor);
             this.validationUtils.addClass(this.txt_Username, "error", Boolean.FALSE);
-            hint_Username.setText(MIN_THREE_CHARACTERS);
+            this.hint_Username.setText(MIN_THREE_CHARACTERS);
             this.validate();
         });
         this.txt_Password.textProperty().addListener((obs, oldText, newText) -> {
@@ -208,9 +209,11 @@ public class SignUpController {
     }
 
     /**
-     * This method sets the password fields in red if they do not match each other
-     * 
-     * @param passwordsMatch boolean indicating if the password is matching or not
+     * This method sets the password fields in red if they do not match each
+     * other
+     *
+     * @param passwordsMatch boolean indicating if the password is matching or
+     * not
      */
     public void setPasswordFieldsError(Boolean passwordsMatch) {
         if (!passwordsMatch) {
@@ -246,23 +249,25 @@ public class SignUpController {
     }
 
     /**
-     * Method that indicates that, by pressing the signup button, it registers 
-     * the user on database. After that, the client gets one alert sowhing the user
-     * the registration has been successful. 
+     * Method that indicates that, by pressing the signup button, it registers
+     * the user on database. After that, the client gets one alert sowhing the
+     * user the registration has been successful.
+     *
      * @throws exceptions.UserAlreadyExistException user exist
-     * @throws exceptions.ErrorConnectingDatabaseException cannot connect to database
+     * @throws exceptions.ErrorConnectingDatabaseException cannot connect to
+     * database
      * @throws exceptions.QueryException the query is not correct
-     * @throws exceptions.ErrorConnectingServerException cannot connect to the server side
+     * @throws exceptions.ErrorConnectingServerException cannot connect to the
+     * server side
      */
     public void signUpButtonClickHandler() {
         //Barra de progreso que indica el estado del registro.
-        progress_indicator.setVisible(true);
-        
+
         //Boton de registro desactivado.
         btn_SignUp.setDisable(true);
         try {
             //Establecer parametros de usuario
-            
+
             User user = new User();
             user.setEmail(this.txt_Email.getText());
             user.setFullName(this.txt_Firstname.getText() + " " + this.txt_Lastname.getText());
@@ -270,39 +275,36 @@ public class SignUpController {
             user.setPrivilege(UserPrivilege.USER);
             user.setStatus(UserStatus.ENABLED);
             user.setLogin(this.txt_Username.getText());
-            
+
+            logger.log(Level.INFO, "Attempting to sign in.");
             //Llama a la clase implementación para mandar el usuario al servidor.
             this.signableImplementation.signUp(user);
             btn_SignUp.setDisable(false);
-            
+
             //Si no hay error, informa al usuario que el registro ha sido correcto.
             Alert alert = new Alert(AlertType.CONFIRMATION);
             alert.setTitle("Signed Up Successfully");
-            
+
             /*Haciendo click en la alerta y comprobando que no ha habido errores,
             abre la ventana de signin.*/
-            
             String s = "You have been signed up. Do you want to go to the login screen?";
             alert.setContentText(s);
             Optional<ButtonType> result = alert.showAndWait();
             if ((result.isPresent()) && (result.get() == ButtonType.OK)) {
                 this.changeStageToLogin();
             }
-            
+
             /*Se capturan los distintos errores posibles, mostrando la 
             correspondiente alerta al usuario.*/
         } catch (ErrorConnectingDatabaseException ex) {
-            logger.log(Level.SEVERE, "Attempting to sign in.");
+            logger.log(Level.SEVERE, "Error connecting database.");
             Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, null, ex);
             btn_SignUp.setDisable(false);
         } catch (UserAlreadyExistException ex) {
             logger.log(Level.SEVERE, "User already exist.");
             this.btn_SignUp.setDisable(true);
-            this.hint_Username.setText("The username or the email already exists.");
-            this.hint_Email.setText("The username or the email already exists.");
-            this.hint_Email.setTextFill(javafx.scene.paint.Color.RED);
+            this.hint_Username.setText("The username already exists.");
             this.hint_Username.setTextFill(javafx.scene.paint.Color.RED);
-            this.validationUtils.addClass(this.txt_Email, "error", Boolean.TRUE);
             this.validationUtils.addClass(this.txt_Username, "error", Boolean.TRUE);
         } catch (QueryException ex) {
             logger.log(Level.SEVERE, "Error doing a query in the database.");
@@ -318,10 +320,22 @@ public class SignUpController {
             }
             logger.log(Level.SEVERE, "Error connecting to the server.");
             btn_SignUp.setDisable(false);
-        } finally {
-            //Cuando acaba todo el proceso de registro, desaparece el indicador de progreso.
-            progress_indicator.setVisible(false);
-
+        } catch (EmailAlreadyExistsException ex) {
+            this.btn_SignUp.setDisable(true);
+            this.hint_Email.setText("The email already exists.");
+            this.hint_Email.setTextFill(javafx.scene.paint.Color.RED);
+            this.validationUtils.addClass(this.txt_Email, "error", Boolean.TRUE);
+            Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (UserAndEmailAlreadyExistException ex) {
+            this.btn_SignUp.setDisable(true);
+            this.hint_Username.setText("The username already exists.");
+            this.hint_Username.setTextFill(javafx.scene.paint.Color.RED);
+            this.validationUtils.addClass(this.txt_Username, "error", Boolean.TRUE);
+            this.btn_SignUp.setDisable(true);
+            this.hint_Email.setText("The email already exists.");
+            this.hint_Email.setTextFill(javafx.scene.paint.Color.RED);
+            this.validationUtils.addClass(this.txt_Email, "error", Boolean.TRUE);
+            Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -346,7 +360,7 @@ public class SignUpController {
     }
 
     /**
-     * If the cancel button is pressed, it asks the user if they are sure to 
+     * If the cancel button is pressed, it asks the user if they are sure to
      * return to the login window.
      */
     public void backButtonClickHandler() {
@@ -359,17 +373,18 @@ public class SignUpController {
             this.changeStageToLogin();
         }
     }
-    private void handleCloseRequest(WindowEvent event){
+
+    private void handleCloseRequest(WindowEvent event) {
         Alert alert = new Alert(AlertType.CONFIRMATION);
         alert.setTitle("Close confirmation");
         alert.setHeaderText("Application will be closed");
         alert.setContentText("You will close the application");
         alert.getButtonTypes().setAll(ButtonType.OK, ButtonType.CANCEL);
         Optional<ButtonType> result = alert.showAndWait();
-        if(result.get().equals(ButtonType.OK)){
+        if (result.get().equals(ButtonType.OK)) {
             stage.close();
             Platform.exit();
-        }else {
+        } else {
             event.consume();
             alert.close();
         }
