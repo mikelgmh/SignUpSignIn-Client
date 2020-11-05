@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Optional;
+import javafx.application.Platform;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -18,6 +19,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import user.User;
 
 /**
@@ -72,6 +74,7 @@ public class DashboardController {
         lbl_Connection.setText("Last connection: " + getFormatterDate());
         lbl_Welcome.setText("Hello " + user.getFullName());
         btn_Logout.setTooltip(new Tooltip("Return to Sign In"));
+        stage.onCloseRequestProperty().set(this::handleCloseRequest);
         stage.show();
     }
 
@@ -112,6 +115,21 @@ public class DashboardController {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern, new Locale("fr", "FR"));
         String date = simpleDateFormat.format(new Date());
         return date;
+    }
+    private void handleCloseRequest(WindowEvent event){
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Close confirmation");
+        alert.setHeaderText("Application will be closed");
+        alert.setContentText("You will close the application");
+        alert.getButtonTypes().setAll(ButtonType.OK, ButtonType.CANCEL);
+        Optional<ButtonType> result = alert.showAndWait();
+        if(result.get().equals(ButtonType.OK)){
+            stage.close();
+            Platform.exit();
+        }else {
+            event.consume();
+            alert.close();
+        }
     }
 
 }

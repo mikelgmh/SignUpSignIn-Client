@@ -12,8 +12,10 @@ import user.User;
 
 // Java
 import java.io.IOException;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import signupsignin.util.ValidationUtils;
 
 // JavaFX
 import javafx.event.ActionEvent;
@@ -22,13 +24,15 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import signupsignin.util.ValidationUtils;
+import javafx.application.Platform;
 
 /**
  * This class handles the interaction of the user with the graphic user
@@ -77,6 +81,7 @@ public class SignInController {
         stage.setTitle("Login");
         stage.setResizable(false);
         stage.setOnShowing(this::handleWindowShowing);
+        stage.onCloseRequestProperty().set(this::handleCloseRequest);
         stage.show();
         logger.log(Level.INFO, "SignIn stage loaded.");
     }
@@ -221,6 +226,21 @@ public class SignInController {
             alertConnectingToDatabase.setHeaderText("Error connecting to the server.");
             alertConnectingToDatabase.setContentText("Can not connect to the server, try to restart the application or contact the server Administrator.");
             alertConnectingToDatabase.showAndWait();
+        }
+    }
+     private void handleCloseRequest(WindowEvent event){
+        Alert alert = new Alert(AlertType.CONFIRMATION);
+        alert.setTitle("Close confirmation");
+        alert.setHeaderText("Application will be closed");
+        alert.setContentText("You will close the application");
+        alert.getButtonTypes().setAll(ButtonType.OK, ButtonType.CANCEL);
+        Optional<ButtonType> result = alert.showAndWait();
+        if(result.get().equals(ButtonType.OK)){
+            stage.close();
+            Platform.exit();
+        }else {
+            event.consume();
+            alert.close();
         }
     }
 }

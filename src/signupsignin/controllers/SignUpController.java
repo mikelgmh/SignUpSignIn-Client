@@ -12,9 +12,11 @@ import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
+import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -29,6 +31,7 @@ import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import signupsignin.util.ValidationUtils;
 import user.User;
 import user.UserPrivilege;
@@ -48,7 +51,7 @@ public class SignUpController {
     private static final String ENTER_VALID_EMAIL = "Type a valid email.";
     private static final String PASSWORD_CONDITIONS = "- Between 8 and 25 characters\n- Uppercase and Lowercase letters\n- One number and special character at least";
     private final Pattern emailRegexp = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
-    private final Pattern passRegexp = Pattern.compile("^(?=.*[0-9])" + "(?=.*[a-z])(?=.*[A-Z])" + "(?=.*[@#$%^&+=])" + "(?=\\S+$).{8,25}$");
+    private final Pattern passRegexp = Pattern.compile("^(?=.*[0-9])" + "(?=.*[a-z])(?=.*[A-Z])" + "(?=.*[@#*$%^&+=])" + "(?=\\S+$).{8,25}$");
     private Stage stage;
     private static final Color greyColor = Color.web("#686464");
     private Signable signableImplementation;
@@ -141,10 +144,10 @@ public class SignUpController {
         this.setListeners();
         this.setStage(stage);
         stage.setScene(scene);
-
         scene.getStylesheets().add(getClass().getResource("/signupsignin/view/errorStyle.css").toExternalForm()); // Imports the CSS file used for errors in some inputs.
         stage.setTitle("Sign Up"); // Sets the title of the window
         stage.setResizable(false); // Prevents the user to resize the window.
+        stage.onCloseRequestProperty().set(this::handleCloseRequest);
         stage.show();
     }
 
@@ -354,6 +357,21 @@ public class SignUpController {
         Optional<ButtonType> result = alert.showAndWait();
         if ((result.isPresent()) && (result.get() == ButtonType.OK)) {
             this.changeStageToLogin();
+        }
+    }
+    private void handleCloseRequest(WindowEvent event){
+        Alert alert = new Alert(AlertType.CONFIRMATION);
+        alert.setTitle("Close confirmation");
+        alert.setHeaderText("Application will be closed");
+        alert.setContentText("You will close the application");
+        alert.getButtonTypes().setAll(ButtonType.OK, ButtonType.CANCEL);
+        Optional<ButtonType> result = alert.showAndWait();
+        if(result.get().equals(ButtonType.OK)){
+            stage.close();
+            Platform.exit();
+        }else {
+            event.consume();
+            alert.close();
         }
     }
 
