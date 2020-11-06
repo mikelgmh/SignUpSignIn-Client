@@ -52,19 +52,20 @@ public class SignInControllerTest extends ApplicationTest {
         clickOn("#txt_Password");
         write("asujidn%");
         clickOn("#btn_SignIn");
-        clickOn("OK");
-        verifyThat("#paneDashboard", isNull());
+        verifyThat("The user entered does not exist in the database.", isVisible());
+        clickOn("Aceptar");  
     }
 
     @Test
     public void testC_IncorrectPasswordAlert() {
         clickOn("#txt_User");
-        write("Imanol");
+        write("imamontoro");
         clickOn("#txt_Password");
         write("asujidn%");
         clickOn("#btn_SignIn");
-        clickOn("OK");
-        verifyThat("#paneDashboard", isNull());
+        verifyThat("The password inserted does not match with the current user. Enter a valid password.", isVisible());
+        clickOn("Aceptar");
+        
     }
 
     @Test
@@ -91,9 +92,9 @@ public class SignInControllerTest extends ApplicationTest {
     @Test
     public void testF_DashboardStageIsVisible() {
         clickOn("#txt_User");
-        write("Imanol");
+        write("imamontoro");
         clickOn("#txt_Password");
-        write("Qwer1234%");
+        write("Abcd*1234");
         clickOn("#btn_SignIn");
         verifyThat("#paneDashboard", isVisible());
     }
