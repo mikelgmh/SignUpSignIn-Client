@@ -111,7 +111,7 @@ public class SignInController {
             this.validate();
         });
         this.txt_Password.textProperty().addListener((obs, oldText, newText) -> {
-            this.validationUtils.textLimiter(this.txt_User, 25, newText);
+            this.validationUtils.textLimiter(this.txt_Password, 25, newText);
             this.validate();
         });
     }
