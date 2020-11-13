@@ -35,7 +35,7 @@ public class ValidationUtils {
     }
 
     public void minLength(TextField tf, final int minLength, String currentValue, String property) {
-        if (currentValue.length() < minLength) {
+        if (currentValue.trim().length() < minLength) {
             tf.getProperties().put(property, false);
         } else {
             tf.getProperties().put(property, true);
@@ -43,7 +43,7 @@ public class ValidationUtils {
     }
 
     public void textLimiter(TextField tf, final int maxLength, String currentValue) {
-        if (currentValue.length() > maxLength) {
+        if (currentValue.trim().length() > maxLength) {
             String s = currentValue.substring(0, maxLength);
             tf.setText(s);
         }

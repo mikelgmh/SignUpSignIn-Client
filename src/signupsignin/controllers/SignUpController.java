@@ -51,9 +51,10 @@ public class SignUpController {
     private ValidationUtils validationUtils = new ValidationUtils(); // Useful to reuse some validations in different controllers.
     private static final String MIN_THREE_CHARACTERS = "Min 3 characters";
     private static final String ENTER_VALID_EMAIL = "Type a valid email.";
-    private static final String PASSWORD_CONDITIONS = "- Between 8 and 25 characters\n- Uppercase and Lowercase letters\n- One number and special character at least";
+    private static final String PASSWORD_CONDITIONS = "- Between 8 and 25 characters\n- Uppercase and Lowercase letters\n- One number and special character at least (*+-_$%¿?%.,)";
     private final Pattern emailRegexp = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
-    private final Pattern passRegexp = Pattern.compile("^(?=.*[0-9])" + "(?=.*[a-z])(?=.*[A-Z])" + "(?=.*[@#*$%^&+=])" + "(?=\\S+$).{8,25}$");
+    private final Pattern passRegexp = Pattern.compile("^(?=.*[0-9])" + "(?=.*[a-z])(?=.*[A-Z])" + "(?=.*[@#*$%^&+-_.,?=])" + "(?=\\S+$).{8,25}$");
+    private final Pattern singleWordRegexp = Pattern.compile("\\w+");
     private Stage stage;
     private static final Color greyColor = Color.web("#686464");
     private Signable signableImplementation;
@@ -138,17 +139,18 @@ public class SignUpController {
         txt_RepeatPassword.getProperties().put("passwordsMatch", false);
 
         logger.log(Level.INFO, "Preparing window.");
-        // Creates a scena and a stage and opens the window.
+
+        // Creates a scene and a stage and opens the window.
         Scene scene = new Scene(parent);
         Stage stage = new Stage();
         logger.log(Level.INFO, "Setting listeners for the components of the window.");
-        this.setListeners();
-        this.setStage(stage);
-        stage.setScene(scene);
+        this.setListeners(); // Sets the listeners for the inputs
+        this.setStage(stage); // Sets the stage
+        stage.setScene(scene); // Sets the scene
         scene.getStylesheets().add(getClass().getResource("/signupsignin/view/errorStyle.css").toExternalForm()); // Imports the CSS file used for errors in some inputs.
         stage.setTitle("Sign Up"); // Sets the title of the window
         stage.setResizable(false); // Prevents the user to resize the window.
-        stage.onCloseRequestProperty().set(this::handleCloseRequest);
+        stage.onCloseRequestProperty().set(this::handleCloseRequest); // Handles the window close request.
         stage.show();
     }
 
@@ -159,51 +161,50 @@ public class SignUpController {
         // Listener for the Firstname field.
         this.txt_Firstname.textProperty().addListener((obs, oldText, newText) -> {
             this.validationUtils.minLength(this.txt_Firstname, 3, newText, "minLengthValidator"); // Adds a min lenght validator
-            this.validationUtils.textLimiter(this.txt_Firstname, 20, newText); // Limits the input to 20 characters
+            this.validationUtils.textLimiter(this.txt_Firstname, 125, newText); // Limits the input to 20 characters
             this.validate(); // Executes the validation.
         });
 
         // Listener for the Lastname field.
         this.txt_Lastname.textProperty().addListener((obs, oldText, newText) -> {
-            this.validationUtils.minLength(this.txt_Lastname, 3, newText, "minLengthValidator");
-            this.validationUtils.textLimiter(this.txt_Lastname, 20, newText);
-            this.validate();
+            this.validationUtils.minLength(this.txt_Lastname, 3, newText, "minLengthValidator"); // Adds min validator
+            this.validationUtils.textLimiter(this.txt_Lastname, 125, newText); // Adds text limiter
+            this.validate(); // Executes the validation.
         });
 
         // Validation for the Email field
         this.txt_Email.textProperty().addListener((obs, oldText, newText) -> {
-            this.validationUtils.minLength(this.txt_Email, 3, newText, "minLengthValidator");
-            this.validationUtils.textLimiter(this.txt_Email, 80, newText);
+            this.validationUtils.minLength(this.txt_Email, 3, newText, "minLengthValidator"); // Adds min validator
+            this.validationUtils.textLimiter(this.txt_Email, 255, newText);
             this.validationUtils.regexValidator(this.emailRegexp, this.txt_Email, newText.toLowerCase(), "emailValidator"); // Adds a regex validation to check if the email is correct
 
-            // Changes the color of the inputs when the user types.
-            this.hint_Email.setTextFill(greyColor);
-            hint_Email.setText(ENTER_VALID_EMAIL);
-            this.validationUtils.addClass(this.txt_Email, "error", Boolean.FALSE);
-            this.validate();
+            this.setEmailFieldError(); // If the email is not valid sets the color to red
+            this.validate(); // Executes the validation
         });
 
         this.txt_Username.textProperty().addListener((obs, oldText, newText) -> {
-            this.validationUtils.minLength(this.txt_Username, 3, newText, "minLengthValidator");
-            this.validationUtils.textLimiter(this.txt_Username, 20, newText);
-            this.hint_Username.setTextFill(greyColor);
-            this.validationUtils.addClass(this.txt_Username, "error", Boolean.FALSE);
-            this.hint_Username.setText(MIN_THREE_CHARACTERS);
-            this.validate();
+            this.validationUtils.minLength(this.txt_Username, 3, newText, "minLengthValidator"); // Adds min validator
+            this.validationUtils.textLimiter(this.txt_Username, 20, newText); // Adds text limiter
+            this.hint_Username.setTextFill(greyColor); // Sets the fill color to grey
+            this.validationUtils.addClass(this.txt_Username, "error", Boolean.FALSE); // Sets the error class to false
+            this.hint_Username.setText(MIN_THREE_CHARACTERS); // Sets the default text
+            this.validationUtils.regexValidator(singleWordRegexp, txt_Username, newText, "singleWordValidator"); // Checks if the username is a single word
+            this.setUsernameFieldError(); // Error if the username is more than a word
+            this.validate(); // Executes the validator
         });
         this.txt_Password.textProperty().addListener((obs, oldText, newText) -> {
-            Boolean passwordsMatch = this.validationUtils.comparePasswords(this.txt_Password, this.txt_RepeatPassword, "passwordsMatch");
-            this.validationUtils.textLimiter(this.txt_Password, 25, newText);
-            this.validationUtils.regexValidator(this.passRegexp, this.txt_Password, newText, "passwordRequirements");
-            this.setPasswordFieldsError(passwordsMatch);
-            this.validate();
+            Boolean passwordsMatch = this.validationUtils.comparePasswords(this.txt_Password, this.txt_RepeatPassword, "passwordsMatch"); // Compares the two passwords
+            this.validationUtils.textLimiter(this.txt_Password, 25, newText); // Limits the password to 25 characters
+            this.validationUtils.regexValidator(this.passRegexp, this.txt_Password, newText, "passwordRequirements"); // Adds a regexp for passwords
+            this.setPasswordFieldsError(passwordsMatch); // Sets the error class for the password fields
+            this.validate(); // Executes the validation
         });
         this.txt_RepeatPassword.textProperty().addListener((obs, oldText, newText) -> {
-            Boolean passwordsMatch = this.validationUtils.comparePasswords(this.txt_Password, this.txt_RepeatPassword, "passwordsMatch");
-            this.validationUtils.textLimiter(this.txt_RepeatPassword, 25, newText);
-            this.validationUtils.regexValidator(this.passRegexp, this.txt_RepeatPassword, newText, "passwordRequirements");
-            this.setPasswordFieldsError(passwordsMatch);
-            this.validate();
+            Boolean passwordsMatch = this.validationUtils.comparePasswords(this.txt_Password, this.txt_RepeatPassword, "passwordsMatch"); // Compares the two passwords
+            this.validationUtils.textLimiter(this.txt_RepeatPassword, 25, newText); // Limits the password to 25 characters
+            this.validationUtils.regexValidator(this.passRegexp, this.txt_RepeatPassword, newText, "passwordRequirements"); // Adds a regex validator for passwords.
+            this.setPasswordFieldsError(passwordsMatch);// Sets the error class for the password fields
+            this.validate(); // Executes the validator
         });
 
     }
@@ -216,18 +217,51 @@ public class SignUpController {
      * not
      */
     public void setPasswordFieldsError(Boolean passwordsMatch) {
-        if (!passwordsMatch) {
+        if (!passwordsMatch) { // If passwords do noy match sets the input error styles
             this.hint_Password.setTextFill(Color.RED);
             this.validationUtils.addClass(this.txt_Password, "error", Boolean.TRUE);
             this.hint_Password.setText("Passwords don't match");
             this.hint_RepeatPassword.setTextFill(Color.RED);
             this.validationUtils.addClass(this.txt_RepeatPassword, "error", Boolean.TRUE);
+        } else { // Sets the default styles to inputs
+            if (!Boolean.parseBoolean(txt_Password.getProperties().get("passwordRequirements").toString())) {
+                this.hint_Password.setTextFill(Color.RED);
+                this.validationUtils.addClass(this.txt_Password, "error", Boolean.TRUE);
+                this.hint_Password.setText("The passwords do not fulfill the requirements:\n" + PASSWORD_CONDITIONS);
+                this.hint_RepeatPassword.setTextFill(Color.RED);
+                this.validationUtils.addClass(this.txt_RepeatPassword, "error", Boolean.TRUE);
+            } else {
+                this.hint_Password.setTextFill(greyColor);
+                this.validationUtils.addClass(this.txt_Password, "error", Boolean.FALSE);
+                this.hint_Password.setText(PASSWORD_CONDITIONS);
+                this.hint_RepeatPassword.setTextFill(greyColor);
+                this.validationUtils.addClass(this.txt_RepeatPassword, "error", Boolean.FALSE);
+            }
+
+        }
+    }
+
+    public void setUsernameFieldError() {
+        if (!Boolean.parseBoolean(txt_Username.getProperties().get("singleWordValidator").toString())) {
+            this.hint_Username.setTextFill(Color.RED);
+            this.validationUtils.addClass(this.txt_Username, "error", Boolean.TRUE);
+            this.hint_Username.setText("The username must not have blank spaces");
         } else {
-            this.hint_Password.setTextFill(greyColor);
-            this.validationUtils.addClass(this.txt_Password, "error", Boolean.FALSE);
-            this.hint_Password.setText(PASSWORD_CONDITIONS);
-            this.hint_RepeatPassword.setTextFill(greyColor);
-            this.validationUtils.addClass(this.txt_RepeatPassword, "error", Boolean.FALSE);
+            this.hint_Username.setTextFill(greyColor);
+            this.validationUtils.addClass(this.txt_Username, "error", Boolean.FALSE);
+            this.hint_Username.setText(MIN_THREE_CHARACTERS);
+        }
+    }
+
+    public void setEmailFieldError() {
+        if (!Boolean.parseBoolean(txt_Email.getProperties().get("emailValidator").toString())) {
+            this.hint_Email.setTextFill(Color.RED);
+            this.hint_Email.setText(ENTER_VALID_EMAIL); // Sets the default hint text
+            this.validationUtils.addClass(this.txt_Email, "error", Boolean.TRUE); // Removes the error class from the input
+        } else {
+            this.hint_Email.setTextFill(greyColor);
+            this.hint_Email.setText(ENTER_VALID_EMAIL); // Sets the default hint text
+            this.validationUtils.addClass(this.txt_Email, "error", Boolean.FALSE); // Removes the error class from the input
         }
     }
 
@@ -239,6 +273,7 @@ public class SignUpController {
                 && Boolean.parseBoolean(this.txt_Firstname.getProperties().get("minLengthValidator").toString())
                 && Boolean.parseBoolean(this.txt_Username.getProperties().get("minLengthValidator").toString())
                 && Boolean.parseBoolean(this.txt_Lastname.getProperties().get("minLengthValidator").toString())
+                && Boolean.parseBoolean(this.txt_Username.getProperties().get("singleWordValidator").toString())
                 && Boolean.parseBoolean(this.txt_Password.getProperties().get("passwordRequirements").toString())
                 && Boolean.parseBoolean(this.txt_RepeatPassword.getProperties().get("passwordRequirements").toString())
                 && Boolean.parseBoolean(this.txt_RepeatPassword.getProperties().get("passwordsMatch").toString())) {
@@ -252,13 +287,6 @@ public class SignUpController {
      * Method that indicates that, by pressing the signup button, it registers
      * the user on database. After that, the client gets one alert sowhing the
      * user the registration has been successful.
-     *
-     * @throws exceptions.UserAlreadyExistException user exist
-     * @throws exceptions.ErrorConnectingDatabaseException cannot connect to
-     * database
-     * @throws exceptions.QueryException the query is not correct
-     * @throws exceptions.ErrorConnectingServerException cannot connect to the
-     * server side
      */
     public void signUpButtonClickHandler() {
         //Barra de progreso que indica el estado del registro.
@@ -266,8 +294,7 @@ public class SignUpController {
         //Boton de registro desactivado.
         btn_SignUp.setDisable(true);
         try {
-            //Establecer parametros de usuario
-
+            // Crea un nuevo usuario con la información recogida
             User user = new User();
             user.setEmail(this.txt_Email.getText());
             user.setFullName(this.txt_Firstname.getText() + " " + this.txt_Lastname.getText());
@@ -284,7 +311,7 @@ public class SignUpController {
             //Si no hay error, informa al usuario que el registro ha sido correcto.
             Alert alert = new Alert(AlertType.CONFIRMATION);
             alert.setTitle("Signed Up Successfully");
-
+            alert.setHeaderText("Signed Up");
             /*Haciendo click en la alerta y comprobando que no ha habido errores,
             abre la ventana de signin.*/
             String s = "You have been signed up. Do you want to go to the login screen?";
@@ -312,6 +339,8 @@ public class SignUpController {
         } catch (ErrorConnectingServerException ex) {
             Alert alert = new Alert(AlertType.CONFIRMATION);
             alert.setTitle("Error connecting server");
+            alert.setHeaderText("Connecting error");
+
             String s = "The server couldn't be reached. Try again?";
             alert.setContentText(s);
             Optional<ButtonType> result = alert.showAndWait();
@@ -343,8 +372,8 @@ public class SignUpController {
      * Closes the current stage and open a new one with the signin controller.
      */
     public void changeStageToLogin() {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/signupsignin/view/SignIn.fxml"));
-        Parent root = null;
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/signupsignin/view/SignIn.fxml")); // Gets the fxml from the views folder.
+        Parent root = null; // Initializes the root variable.
         try {
             root = (Parent) loader.load();
             stage.close();
@@ -364,8 +393,10 @@ public class SignUpController {
      * return to the login window.
      */
     public void backButtonClickHandler() {
+        // Creates an alert, if okay button pressed then go back.
         Alert alert = new Alert(AlertType.CONFIRMATION);
         alert.setTitle("Go back");
+        alert.setHeaderText("You will go back");
         String s = "Are you sure you want to go back? The data will be lost.";
         alert.setContentText(s);
         Optional<ButtonType> result = alert.showAndWait();
@@ -375,6 +406,7 @@ public class SignUpController {
     }
 
     private void handleCloseRequest(WindowEvent event) {
+        // Closes the app if the OK button is pressed.
         Alert alert = new Alert(AlertType.CONFIRMATION);
         alert.setTitle("Close confirmation");
         alert.setHeaderText("Application will be closed");
