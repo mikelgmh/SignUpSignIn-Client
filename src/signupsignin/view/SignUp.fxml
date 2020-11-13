@@ -24,7 +24,7 @@
       <TextField fx:id="txt_Username" layoutX="106.0" layoutY="344.0" prefHeight="31.0" prefWidth="186.0" />
       <PasswordField fx:id="txt_Password" layoutX="107.0" layoutY="453.0" prefHeight="31.0" prefWidth="186.0" />
       <PasswordField fx:id="txt_RepeatPassword" layoutX="391.0" layoutY="453.0" prefHeight="31.0" prefWidth="186.0" />
-      <Button fx:id="btn_SignUp" disable="true" layoutX="518.0" layoutY="543.0" mnemonicParsing="false" onAction="#signUpButtonClickHandler" text="Sign Up" />
+      <Button fx:id="btn_SignUpRegister" disable="true" layoutX="518.0" layoutY="543.0" mnemonicParsing="false" onAction="#signUpButtonClickHandler" text="Sign Up" />
       <Button fx:id="btn_Cancel" layoutX="436.0" layoutY="543.0" mnemonicParsing="false" onAction="#backButtonClickHandler" text="Cancel" />
       <Text layoutX="101.0" layoutY="56.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Sign Up">
          <font>

@@ -21,6 +21,9 @@ public class SignUpSignInClient extends Application {
 
     private static final Logger logger = Logger.getLogger("signupsignin.SignUpSignInClient");
 
+
+ 
+
     /**
      * The start method in which the JavaFX starts.
      * @param stage the first stage of the JavaFX application.

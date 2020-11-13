@@ -96,7 +96,7 @@ public class SignUpController {
     private PasswordField txt_RepeatPassword;
 
     @FXML
-    private Button btn_SignUp;
+    private Button btn_SignUpRegister;
 
     public Stage getStage() {
         return this.stage;
@@ -127,7 +127,7 @@ public class SignUpController {
         hint_RepeatPassword.setText("");
 
         // Adds tooltips
-        btn_SignUp.setTooltip(new Tooltip("Click to sign up"));
+        btn_SignUpRegister.setTooltip(new Tooltip("Click to sign up"));
 
         // Sets custom properties to the inputs. These properties show the status of the validation of them.
         txt_Email.getProperties().put("emailValidator", false);
@@ -283,9 +283,9 @@ public class SignUpController {
                 && Boolean.parseBoolean(this.txt_Password.getProperties().get("passwordRequirements").toString())
                 && Boolean.parseBoolean(this.txt_RepeatPassword.getProperties().get("passwordRequirements").toString())
                 && Boolean.parseBoolean(this.txt_RepeatPassword.getProperties().get("passwordsMatch").toString())) {
-            this.btn_SignUp.setDisable(false);
+            this.btn_SignUpRegister.setDisable(false);
         } else {
-            this.btn_SignUp.setDisable(true);
+            this.btn_SignUpRegister.setDisable(true);
         }
     }
 
@@ -298,7 +298,7 @@ public class SignUpController {
         //Barra de progreso que indica el estado del registro.
 
         //Boton de registro desactivado.
-        btn_SignUp.setDisable(true);
+        btn_SignUpRegister.setDisable(true);
         try {
             // Crea un nuevo usuario con la información recogida
             User user = new User();
@@ -312,7 +312,7 @@ public class SignUpController {
             logger.log(Level.INFO, "Attempting to sign in.");
             //Llama a la clase implementación para mandar el usuario al servidor.
             this.signableImplementation.signUp(user);
-            btn_SignUp.setDisable(false);
+            btn_SignUpRegister.setDisable(false);
 
             //Si no hay error, informa al usuario que el registro ha sido correcto.
             Alert alert = new Alert(AlertType.CONFIRMATION);
@@ -332,16 +332,16 @@ public class SignUpController {
         } catch (ErrorConnectingDatabaseException ex) {
             logger.log(Level.SEVERE, "Error connecting database.");
             Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, null, ex);
-            btn_SignUp.setDisable(false);
+            btn_SignUpRegister.setDisable(false);
         } catch (UserAlreadyExistException ex) {
             logger.log(Level.SEVERE, "User already exist.");
-            this.btn_SignUp.setDisable(true);
+            this.btn_SignUpRegister.setDisable(true);
             this.hint_Username.setText("The username already exists.");
             this.hint_Username.setTextFill(javafx.scene.paint.Color.RED);
             this.validationUtils.addClass(this.txt_Username, "error", Boolean.TRUE);
         } catch (QueryException ex) {
             logger.log(Level.SEVERE, "Error doing a query in the database.");
-            btn_SignUp.setDisable(false);
+            btn_SignUpRegister.setDisable(false);
         } catch (ErrorConnectingServerException ex) {
             Alert alert = new Alert(AlertType.CONFIRMATION);
             alert.setTitle("Error connecting server");
@@ -354,19 +354,19 @@ public class SignUpController {
                 this.signUpButtonClickHandler();
             }
             logger.log(Level.SEVERE, "Error connecting to the server.");
-            btn_SignUp.setDisable(false);
+            btn_SignUpRegister.setDisable(false);
         } catch (EmailAlreadyExistsException ex) {
-            this.btn_SignUp.setDisable(true);
+            this.btn_SignUpRegister.setDisable(true);
             this.hint_Email.setText("The email already exists.");
             this.hint_Email.setTextFill(javafx.scene.paint.Color.RED);
             this.validationUtils.addClass(this.txt_Email, "error", Boolean.TRUE);
             Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (UserAndEmailAlreadyExistException ex) {
-            this.btn_SignUp.setDisable(true);
+            this.btn_SignUpRegister.setDisable(true);
             this.hint_Username.setText("The username already exists.");
             this.hint_Username.setTextFill(javafx.scene.paint.Color.RED);
             this.validationUtils.addClass(this.txt_Username, "error", Boolean.TRUE);
-            this.btn_SignUp.setDisable(true);
+            this.btn_SignUpRegister.setDisable(true);
             this.hint_Email.setText("The email already exists.");
             this.hint_Email.setTextFill(javafx.scene.paint.Color.RED);
             this.validationUtils.addClass(this.txt_Email, "error", Boolean.TRUE);
