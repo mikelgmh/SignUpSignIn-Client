@@ -189,7 +189,7 @@ public class SignUpController {
             this.validationUtils.addClass(this.txt_Username, "error", Boolean.FALSE); // Sets the error class to false
             this.hint_Username.setText(MIN_THREE_CHARACTERS); // Sets the default text
             this.validationUtils.regexValidator(singleWordRegexp, txt_Username, newText, "singleWordValidator"); // Checks if the username is a single word
-            this.setUsernameFieldError(); // Error if the username is more than a word
+            this.setUsernameFieldError(); // Error if the username has  more than a word
             this.validate(); // Executes the validator
         });
         this.txt_Password.textProperty().addListener((obs, oldText, newText) -> {
