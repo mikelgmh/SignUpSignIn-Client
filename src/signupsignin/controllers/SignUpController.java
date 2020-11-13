@@ -241,18 +241,24 @@ public class SignUpController {
         }
     }
 
+    /**
+     * Changes the style of the Username field if the data typed is not valid.
+     */
     public void setUsernameFieldError() {
         if (!Boolean.parseBoolean(txt_Username.getProperties().get("singleWordValidator").toString())) {
-            this.hint_Username.setTextFill(Color.RED);
-            this.validationUtils.addClass(this.txt_Username, "error", Boolean.TRUE);
-            this.hint_Username.setText("The username must not have blank spaces");
+            this.hint_Username.setTextFill(Color.RED); // Sets the color of the hint to red
+            this.validationUtils.addClass(this.txt_Username, "error", Boolean.TRUE);// Sets the error class to true for this input
+            this.hint_Username.setText("The username must not have blank spaces"); // Sets the error message.
         } else {
-            this.hint_Username.setTextFill(greyColor);
-            this.validationUtils.addClass(this.txt_Username, "error", Boolean.FALSE);
-            this.hint_Username.setText(MIN_THREE_CHARACTERS);
+            this.hint_Username.setTextFill(greyColor); // Sets the hint color to grey
+            this.validationUtils.addClass(this.txt_Username, "error", Boolean.FALSE); // removes the error class
+            this.hint_Username.setText(MIN_THREE_CHARACTERS); // Sets a hint text
         }
     }
 
+    /**
+     * Changes the style of the Email field if the data typed is not valid.
+     */
     public void setEmailFieldError() {
         if (!Boolean.parseBoolean(txt_Email.getProperties().get("emailValidator").toString())) {
             this.hint_Email.setTextFill(Color.RED);
